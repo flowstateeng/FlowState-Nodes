@@ -7,6 +7,12 @@ The ultimate set of ComfyUI custom nodes to streamline your workflows. Enjoy!
 
 Email info@flowstateengineering.com with questions.
 
+<div align="center">
+
+**[:heart: Github Sponsor](https://github.com/sponsors/flowstateeng) | [:coin: Ca$hApp](cash.app/$FlowStateEngineering) | [:coin: Venmo](account.venmo.com/u/flowstateeng) | [:coin: Stripe](donate.stripe.com/9AQ3fm04OfqCgiAcMN) **
+
+
+</div>
 
 [Video Demo](https://youtu.be/5wAHg8OvgbM?si=Uhl5oNx51d1y7XWQ) in my [ComfyUI Playlist](https://youtube.com/playlist?list=PLopF-DMGUFkQqh_FXP03qES4Lq-wY34kO&si=u4ltujwGIX-sZLYG)
 

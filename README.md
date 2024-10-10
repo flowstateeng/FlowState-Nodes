@@ -18,7 +18,9 @@ Email info@flowstateengineering.com with questions.
 
 Everything is open and free, but if you like my work and wish to see updates and new features please consider sponsoring my projects.
 
-- [FlowState Custom ComfyUI Nodes](https://github.com/flowstateeng/FlowState-Nodes)
+- [FlowState Unified Model Loader](https://github.com/flowstateeng/FlowState-Nodes/blob/main/FlowStateUnifiedModelLoader.py)
+- [FlowState LLM Prompt & LLM Output](https://github.com/flowstateeng/FlowState-Nodes/blob/main/FlowStateLLMPrompt.py)
+- [FlowState Latent Chooser](https://github.com/flowstateeng/FlowState-Nodes/blob/main/FlowStateLatentChooser.py)
 
 Video tutorials can be found on YouTube at [FlowState YouTube Channel](https://www.youtube.com/@flowstateeng)
 

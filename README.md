@@ -12,15 +12,15 @@ Email info@flowstateengineering.com with questions.
 # Sponsorship
 <div align="center">
 
-**[:heart: Github Sponsor](https://github.com/sponsors/flowstateeng) | [:coin: Ca$hApp](cash.app/$FlowStateEngineering) | [:dollar: Venmo](account.venmo.com/u/flowstateeng) | [:goat: Stripe](donate.stripe.com/9AQ3fm04OfqCgiAcMN) **
+** [:heart: Github Sponsor](https://github.com/sponsors/flowstateeng) | [:coin: Ca$hApp](cash.app/$FlowStateEngineering) | [:dollar: Venmo](account.venmo.com/u/flowstateeng) | [:goat: Stripe](donate.stripe.com/9AQ3fm04OfqCgiAcMN) **
 
 </div>
 
-If you like my work and wish to see updates and new features please consider sponsoring my projects.
+Everything is open and free, but if you like my work and wish to see updates and new features please consider sponsoring my projects.
 
 - [FlowState Custom ComfyUI Nodes](https://github.com/flowstateeng/FlowState-Nodes)
 
-Videos tutorials can be found on YouTube at [FlowState YouTube Channel](https://www.youtube.com/@flowstateeng)
+Video tutorials can be found on YouTube at [FlowState YouTube Channel](https://www.youtube.com/@flowstateeng)
 
 The only way to keep the code open and free is by sponsoring its development. The more sponsorships, the more time I can dedicate to open source projects for everyone!
 
@@ -82,7 +82,11 @@ Expand your latent options and clean up your workflow with FlowState Latent Choo
 
 
 ## Authors
-* **Johnathan Chivington:** [GitHub](https://github.com/flowstateeng), [YouTube](https://youtube.com/@flowstateeng)
+**Johnathan Chivington:**
+* [YouTube](https://youtube.com/@flowstateeng)
+* [Patreon](https://youtube.com/@flowstateeng)
+* [X](https://x.com/FlowStateEng)
+* [GitHub](https://github.com/flowstateeng)
 <br/>
 
 ## Contributing

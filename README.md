@@ -31,7 +31,7 @@ Please consider a [Github Sponsorship](https://github.com/sponsors/flowstateeng)
 ## Status
 ![Build Status](https://img.shields.io/badge/build-Stable-green.svg)
 ![License](https://img.shields.io/badge/license-NONE-green.svg)
-<br/><br/><br/>
+<br/><br/>
 
 ## Contents
 * [Prerequisites](https://github.com/flowstateeng/FlowState-Nodes/tree/master#prerequisites)

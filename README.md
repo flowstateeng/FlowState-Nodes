@@ -7,28 +7,40 @@ The ultimate set of ComfyUI custom nodes to streamline your workflows. Enjoy!
 
 Email info@flowstateengineering.com with questions.
 
+
 <div align="center">
 
-**[:heart: Github Sponsor](https://github.com/sponsors/flowstateeng) | [:coin: Ca$hApp](cash.app/$FlowStateEngineering) | [:coin: Venmo](account.venmo.com/u/flowstateeng) | [:coin: Stripe](donate.stripe.com/9AQ3fm04OfqCgiAcMN) **
-
+**[:heart: Github Sponsor](https://github.com/sponsors/flowstateeng) | [:coin: Ca$hApp](cash.app/$FlowStateEngineering) | [:dollar: Venmo](account.venmo.com/u/flowstateeng) | [:money: Stripe](donate.stripe.com/9AQ3fm04OfqCgiAcMN) **
 
 </div>
 
-[Video Demo](https://youtu.be/5wAHg8OvgbM?si=Uhl5oNx51d1y7XWQ) in my [ComfyUI Playlist](https://youtube.com/playlist?list=PLopF-DMGUFkQqh_FXP03qES4Lq-wY34kO&si=u4ltujwGIX-sZLYG)
+
+# Sponsorship
+If you like my work and wish to see updates and new features please consider sponsoring my projects.
+
+- [FlowState Custom ComfyUI Nodes](https://github.com/flowstateeng/FlowState-Nodes)
+
+Videos tutorials can be found on YouTube at [FlowState YouTube Channel](https://www.youtube.com/@flowstateeng)
+
+The only way to keep the code open and free is by sponsoring its development. The more sponsorships, the more time I can dedicate to open source projects for everyone!
+
+Please consider a [Github Sponsorship](https://github.com/sponsors/flowstateeng) or [Patreon Membership](https://www.patreon.com/flowstateeng/membership), or one-time donations through [CashApp](cash.app/$FlowStateEngineering), [Venmo](account.venmo.com/u/flowstateeng) or [Stripe](donate.stripe.com/9AQ3fm04OfqCgiAcMN).
 
 
+
+## Status
 ![Build Status](https://img.shields.io/badge/build-Stable-green.svg)
 ![License](https://img.shields.io/badge/license-NONE-green.svg)
 <br/><br/><br/>
 
 ## Contents
-* [Prerequisites](https://github.com/chivington/Neural-Network-Performance-Analyzer/tree/master#prerequisites)
-* [Installation](https://github.com/chivington/Neural-Network-Performance-Analyzer/tree/master#installation)
-* [Usage](https://github.com/chivington/Neural-Network-Performance-Analyzer/tree/master#usage)
-* [Authors](https://github.com/chivington/Neural-Network-Performance-Analyzer/tree/master#authors)
-* [Contributing](https://github.com/chivington/Neural-Network-Performance-Analyzer/tree/master#contributing)
-* [Acknowledgments](https://github.com/chivington/Neural-Network-Performance-Analyzer/tree/master#acknowledgments)
-* [License](https://github.com/chivington/Neural-Network-Performance-Analyzer/tree/master#license)
+* [Prerequisites](https://github.com/flowstateeng/FlowState-Nodes/tree/master#prerequisites)
+* [Installation](https://github.com/flowstateeng/FlowState-Nodes/tree/master#installation)
+* [Usage](https://github.com/flowstateeng/FlowState-Nodes/tree/master#usage)
+* [Authors](https://github.com/flowstateeng/FlowState-Nodes/tree/master#authors)
+* [Contributing](https://github.com/flowstateeng/FlowState-Nodes/tree/master#contributing)
+* [Acknowledgments](https://github.com/flowstateeng/FlowState-Nodes/tree/master#acknowledgments)
+* [License](https://github.com/flowstateeng/FlowState-Nodes/tree/master#license)
 <br/>
 
 ## Prerequisites
@@ -38,6 +50,12 @@ Email info@flowstateengineering.com with questions.
 
 
 ## Installation
+[Video Demo](https://youtu.be/5wAHg8OvgbM?si=Uhl5oNx51d1y7XWQ) in my [ComfyUI Playlist](https://youtube.com/playlist?list=PLopF-DMGUFkQqh_FXP03qES4Lq-wY34kO&si=u4ltujwGIX-sZLYG)
+
+Paste this link into your ComfyUI Manager > "Install via Git URL: https://github.com/flowstateeng/FlowState-Nodes.git
+
+OR
+
 In your ComfyUI custom nodes folder...
 ```bash
 git clone https://github.com/flowstateeng/FlowState-Nodes.git

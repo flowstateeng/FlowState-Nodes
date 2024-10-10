@@ -10,7 +10,7 @@ Email info@flowstateengineering.com with questions.
 
 <div align="center">
 
-**[:heart: Github Sponsor](https://github.com/sponsors/flowstateeng) | [:coin: Ca$hApp](cash.app/$FlowStateEngineering) | [:dollar: Venmo](account.venmo.com/u/flowstateeng) | [:money: Stripe](donate.stripe.com/9AQ3fm04OfqCgiAcMN) **
+**[:heart: Github Sponsor](https://github.com/sponsors/flowstateeng) | [:coin: Ca$hApp](cash.app/$FlowStateEngineering) | [:dollar: Venmo](account.venmo.com/u/flowstateeng) | [:goat: Stripe](donate.stripe.com/9AQ3fm04OfqCgiAcMN) **
 
 </div>
 

@@ -8,14 +8,14 @@ The ultimate set of ComfyUI custom nodes to streamline your workflows. Enjoy!
 Email info@flowstateengineering.com with questions.
 
 
+
+# Sponsorship
 <div align="center">
 
 **[:heart: Github Sponsor](https://github.com/sponsors/flowstateeng) | [:coin: Ca$hApp](cash.app/$FlowStateEngineering) | [:dollar: Venmo](account.venmo.com/u/flowstateeng) | [:goat: Stripe](donate.stripe.com/9AQ3fm04OfqCgiAcMN) **
 
 </div>
 
-
-# Sponsorship
 If you like my work and wish to see updates and new features please consider sponsoring my projects.
 
 - [FlowState Custom ComfyUI Nodes](https://github.com/flowstateeng/FlowState-Nodes)

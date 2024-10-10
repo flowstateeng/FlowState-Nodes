@@ -1,5 +1,5 @@
 <p align="center">
-  <img width='650' src='https://github.com/flowstateeng/FlowState-Nodes/blob/main/FlowState-Custom-Nodes-Banner.png' alt='MNIST Digits'/>
+  <img width='800' src='https://github.com/flowstateeng/FlowState-Nodes/blob/main/imgs/FlowState-Custom-Nodes-Banner.png' alt='MNIST Digits'/>
 </p>
 
 # FlowState Custom Nodes
@@ -32,32 +32,34 @@ Email info@flowstateengineering.com with questions.
 
 
 ## Installation
-In your ComfyUI custom nodes folder.
+In your ComfyUI custom nodes folder...
 ```bash
 git clone https://github.com/flowstateeng/Neural-Network-Performance-Analyzer.git
 ```
 <br/>
 
-<!-- <br/>
+<br/>
 <p align="center">
-  <img width='600' src='https://github.com/chivington/Neural-Network-Performance-Analyzer/blob/master/imgs/random-img.jpg' alt='Random Digit'/>
+  <img width='800' src='https://github.com/flowstateeng/FlowState-Nodes/blob/master/imgs/FS-LLM.png' alt='FS LLM Image'/>
 </p><br/>
 
 <p align="center">
-  <img width='600' src='https://github.com/chivington/Neural-Network-Performance-Analyzer/blob/master/imgs/errors-and-times.jpg' alt='Training & Validation Errors'/>
+  <img width='800' src='https://github.com/flowstateeng/FlowState-Nodes/blob/master/imgs/FS-Unified-Model-Loader.png' alt='FS Unified Model Loader Image'/>
 </p><br/>
 
 <p align="center">
-  <img width='600' src='https://github.com/chivington/Neural-Network-Performance-Analyzer/blob/master/imgs/classification.jpg' alt='Classification Test'/>
+  <img width='800' src='https://github.com/flowstateeng/FlowState-Nodes/blob/master/imgs/FS-Latent-Chooser.png' alt='FS Latent Chooser Image'/>
 </p>
-<br/><br/> -->
+<br/><br/>
 
 
 ## Authors
 * **Johnathan Chivington:** [GitHub](https://github.com/flowstateeng), [YouTube](https://youtube.com/@flowstateeng)
+<br/>
 
 ## Contributing
 Not currently accepting outside contributors, but feel free to use as you wish.
+<br/>
 
 ## License
 There is no license associated with this content.

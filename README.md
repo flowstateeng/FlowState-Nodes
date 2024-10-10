@@ -64,18 +64,19 @@ git clone https://github.com/flowstateeng/FlowState-Nodes.git
 
 
 # Current Nodes
+## FlowState LLM Prompt & LLM Prompt Output
 Tighten up your workflow with the FlowState LLM Prompt. Load a .gguf model to generate sophisticated image prompts, or simply flip a switch to use your own. Handles the text encoding for you internally, so you don't need another Text Encode node off to the side. Outputs the original and generated text and conditioning, in case you want to pass it to another node. Also includes the Clip Attention Multiply functionality, thus eliminating another node from your workflow.
 <p align="center">
   <img width='850' src='https://github.com/flowstateeng/FlowState-Nodes/blob/main/imgs/FS-LLM.png' alt='FS LLM Image'/>
 </p><br/><br/>
 
-
+## FlowState Unified Model Loader
 Simplify your model loading with the FlowState Unified Model Loader. Load your UNET and Checkpoint models in a single node. Including support for Flux NF4! No need to have three separate nodes for Stable Diffusion, Flux Dev/Schnell and Flux NF4. Do it all in a single node!
 <p align="center">
   <img width='850' src='https://github.com/flowstateeng/FlowState-Nodes/blob/main/imgs/FS-Unified-Model-Loader.png' alt='FS Unified Model Loader Image'/>
 </p><br/><br/>
 
-
+## FlowState Latent Chooser
 Expand your latent options and clean up your workflow with FlowState Latent Chooser. Easily select between an empty latent, input image as a latent, and imported image as a latent with a simple switch. Vary the denoise on your sampler to control the amount of style transfer you want from your image latent in your generated images.
 <p align="center">
   <img width='850' src='https://github.com/flowstateeng/FlowState-Nodes/blob/main/imgs/FS-Latent-Chooser.png' alt='FS Latent Chooser Image'/>

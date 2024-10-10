@@ -60,9 +60,10 @@ In your ComfyUI custom nodes folder...
 ```bash
 git clone https://github.com/flowstateeng/FlowState-Nodes.git
 ```
-<br/>
+<br/><br/>
 
-<br/>
+
+# Current Nodes
 Tighten up your workflow with the FlowState LLM Prompt. Load a .gguf model to generate sophisticated image prompts, or simply flip a switch to use your own. Handles the text encoding for you internally, so you don't need another Text Encode node off to the side. Outputs the original and generated text and conditioning, in case you want to pass it to another node. Also includes the Clip Attention Multiply functionality, thus eliminating another node from your workflow.
 <p align="center">
   <img width='850' src='https://github.com/flowstateeng/FlowState-Nodes/blob/main/imgs/FS-LLM.png' alt='FS LLM Image'/>

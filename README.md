@@ -85,10 +85,7 @@ Expand your latent options and clean up your workflow with FlowState Latent Choo
 
 ## Authors
 **Johnathan Chivington:**
-* [YouTube](https://youtube.com/@flowstateeng)
-* [Patreon](https://youtube.com/@flowstateeng)
-* [X](https://x.com/FlowStateEng)
-* [GitHub](https://github.com/flowstateeng)
+* [YouTube](https://youtube.com/@flowstateeng), [Patreon](https://youtube.com/@flowstateeng), [X](https://x.com/FlowStateEng), [GitHub](https://github.com/flowstateeng)
 <br/>
 
 ## Contributing

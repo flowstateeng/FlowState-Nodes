@@ -34,7 +34,7 @@ Email info@flowstateengineering.com with questions.
 ## Installation
 In your ComfyUI custom nodes folder...
 ```bash
-git clone https://github.com/flowstateeng/Neural-Network-Performance-Analyzer.git
+git clone https://github.com/flowstateeng/FlowState-Nodes.git
 ```
 <br/>
 

@@ -40,15 +40,15 @@ git clone https://github.com/flowstateeng/Neural-Network-Performance-Analyzer.gi
 
 <br/>
 <p align="center">
-  <img width='800' src='https://github.com/flowstateeng/FlowState-Nodes/blob/master/imgs/FS-LLM.png' alt='FS LLM Image'/>
+  <img width='800' src='https://github.com/flowstateeng/FlowState-Nodes/blob/main/imgs/FS-LLM.png' alt='FS LLM Image'/>
 </p><br/>
 
 <p align="center">
-  <img width='800' src='https://github.com/flowstateeng/FlowState-Nodes/blob/master/imgs/FS-Unified-Model-Loader.png' alt='FS Unified Model Loader Image'/>
+  <img width='800' src='https://github.com/flowstateeng/FlowState-Nodes/blob/main/imgs/FS-Unified-Model-Loader.png' alt='FS Unified Model Loader Image'/>
 </p><br/>
 
 <p align="center">
-  <img width='800' src='https://github.com/flowstateeng/FlowState-Nodes/blob/master/imgs/FS-Latent-Chooser.png' alt='FS Latent Chooser Image'/>
+  <img width='800' src='https://github.com/flowstateeng/FlowState-Nodes/blob/main/imgs/FS-Latent-Chooser.png' alt='FS Latent Chooser Image'/>
 </p>
 <br/><br/>
 
@@ -59,7 +59,7 @@ git clone https://github.com/flowstateeng/Neural-Network-Performance-Analyzer.gi
 
 ## Contributing
 Not currently accepting outside contributors, but feel free to use as you wish.
-<br/>
+<br/><br/>
 
 ## License
 There is no license associated with this content.

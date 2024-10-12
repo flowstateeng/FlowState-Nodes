@@ -16,4 +16,4 @@ https://github.com/oobabooga/llama-cpp-python-cuBLAS-wheels/releases/download/te
 
 
 # NF4 Loader
-https://github.com/comfyanonymous/ComfyUI_bitsandbytes_NF4.git
+git+https://github.com/comfyanonymous/ComfyUI_bitsandbytes_NF4.git

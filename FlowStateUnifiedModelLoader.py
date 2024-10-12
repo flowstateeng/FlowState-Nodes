@@ -29,7 +29,8 @@ import comfy.sd
 from comfy.utils import load_torch_file
 from nodes import UNETLoader
 from nodes import CheckpointLoaderSimple
-from custom_nodes.ComfyUI_bitsandbytes_NF4 import CheckpointLoaderNF4
+
+from .NF4Loader import CheckpointLoaderNF4
 
 try:
     Llama = importlib.import_module('llama_cpp_cuda').Llama

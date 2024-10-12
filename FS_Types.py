@@ -23,6 +23,11 @@ INT = ('INT', { 'default': 1, 'min': -sys.maxsize, 'max': sys.maxsize, 'step': 1
 SEED = ('INT', { 'default': 4, 'min': -sys.maxsize, 'max': sys.maxsize, 'step': 1 })
 MAX_TOKENS = ('INT', {'default': 4096, 'min': 1, 'max': 8192})
 
+STEPS = ('INT', {'default': 32, 'min': 1, 'max': 10000})
+GUIDANCE = ('FLOAT', {'default': 4.0, 'min': 0.0, 'max': 100.0, 'step':0.1, 'round': 0.01})
+MAX_SHIFT = ('STRING', { 'multiline': False, 'dynamicPrompts': False, 'default': '' })
+BASE_SHIFT = ('STRING', { 'multiline': False, 'dynamicPrompts': False, 'default': '' })
+
 BOOLEAN = ('BOOLEAN', {'default': True})
 BOOLEAN_FALSE = ('BOOLEAN', {'default': False})
 BOOLEAN_TRUE = ('BOOLEAN', {'default': True})
@@ -46,6 +51,8 @@ METADATA_RAW = ('METADATA_RAW', {'forceInput': True})
 MODEL = ('MODEL', )
 MODEL_UNIFIED = ('MODEL', 'CLIP', 'VAE', )
 CONDITIONING = ('CONDITIONING', )
+
+SAMPLER_UNIFIED = ('LATENT', 'IMAGE', )
 
 STRING_OUT = ('STRING', )
 STRING_OUT_2 = ('STRING', 'STRING', )

@@ -38,7 +38,11 @@ class FlowStateLatentChooser:
     FUNCTION = 'create_latent'
     RETURN_TYPES = LATENT_CHOOSER
     RETURN_NAMES = ('latent', 'width', 'height', )
-    OUTPUT_TOOLTIPS = ('The latent image batch.',)
+    OUTPUT_TOOLTIPS = (
+        'The latent image batch.',
+        'Image width.',
+        'Image height.',
+    )
 
     @classmethod
     def __init__(self):

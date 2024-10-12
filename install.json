@@ -1,0 +1,8 @@
+{
+    "dependencies": [
+      {
+        "repo": "https://github.com/comfyanonymous/ComfyUI_bitsandbytes_NF4.git",
+        "branch": "main"
+      }
+    ]
+}

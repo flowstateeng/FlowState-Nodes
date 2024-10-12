@@ -22,7 +22,6 @@ import numpy as np
 import os, sys
 import node_helpers
 import folder_paths
-import importlib
 
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.realpath(__file__)), "comfy"))
 
@@ -37,7 +36,8 @@ class FlowStateLatentChooser:
     CATEGORY = 'FlowState/latent'
     DESCRIPTION = 'Create a new batch of latent images to be denoised via sampling.'
     FUNCTION = 'create_latent'
-    RETURN_TYPES = LATENT
+    RETURN_TYPES = LATENT_CHOOSER
+    RETURN_NAMES = ('latent', 'width', 'height', )
     OUTPUT_TOOLTIPS = ('The latent image batch.',)
 
     @classmethod
@@ -66,7 +66,7 @@ class FlowStateLatentChooser:
     @classmethod
     def generate(self, width, height, batch_size=1):
         latent = torch.zeros([batch_size, 4, height // 8, width // 8], device=self.device)
-        return ({'samples':latent}, )
+        return latent
 
     @classmethod
     def VALIDATE_INPUTS(s, image, vae=None):
@@ -116,14 +116,21 @@ class FlowStateLatentChooser:
             output_image = output_images[0]
 
         encoded = vae.encode(output_image[:,:,:,:3])
-        return ({'samples': encoded}, )
+        return encoded, output_image
 
     def create_latent(self, latent_type, image, vae, width, height, batch_size=1, pixels=None):
         if latent_type == 'empty_latent':
-            return self.generate(width, height, batch_size)
+            latent = self.generate(width, height, batch_size)
+            return ({'samples':latent}, width, height, )
         elif latent_type == 'input_img':
-            return ({'samples': vae.encode(pixels[:,:,:,:3])}, )
+            latent = vae.encode(pixels[:,:,:,:3])
+            img_width = pixels.shape[2]
+            img_height = pixels.shape[1]
+            return ({'samples':latent}, img_width, img_height, )
         else:
-            return self.load_and_encode(image, vae)
+            latent, loaded_img = self.load_and_encode(image, vae)
+            img_width = loaded_img.shape[2]
+            img_height = loaded_img.shape[1]
+            return ({'samples':latent}, img_width, img_height, )
 
 

@@ -5,9 +5,25 @@
 # Contact: johnathan@flowstateengineering.com | youtube.com/@flowstateeng
 
 
+
+##
+# SYSTEM STATUS
+##
+print(f'  - Loading custom nodes...')
+
+
 ##
 # NODES
 ##
-from .FlowStateLatentChooser import *
+from .FlowStateFVDSampler import *
+from .FlowStateUnifiedSampler import *
 from .FlowStateLLMPrompt import *
 from .FlowStateUnifiedModelLoader import *
+from .FlowStateLatentChooser import *
+
+
+##
+# SYSTEM STATUS
+##
+print(f'  - Nodes Loaded.')
+

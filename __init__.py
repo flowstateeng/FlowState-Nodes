@@ -5,6 +5,18 @@
 # Contact: johnathan@flowstateengineering.com | youtube.com/@flowstateeng
 
 
-from .FS_Nodes import *
+
+##
+# SYSTEM STATUS
+##
+print(
+    f'\n FlowState Nodes'
+    f'\n  - System initializing...'
+)
+
+
+##
+# IMPORTS
+##
 from .FS_Mappings import *
 

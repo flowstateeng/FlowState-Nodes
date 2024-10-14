@@ -11,7 +11,7 @@
 import sys
 import nodes
 import folder_paths
-
+import copy
 
 ##
 # ANY TYPE
@@ -83,13 +83,13 @@ FVD_EXTEND_CT = ('INT', {'default': 1, 'min': 1, 'max': 100, 'step': 1, 'tooltip
 
 # DIRECTORIES
 try:
-    UNET_DIR = (folder_paths.get_filename_list('diffusion_models'), )
+    UNET_DIR = (copy.deepcopy(folder_paths.get_filename_list('diffusion_models')), {'tooltip': 'Diffusion model list.'}, )
 except:
-    UNET_DIR = (folder_paths.get_filename_list('unet'), )
+    UNET_DIR = (copy.deepcopy(folder_paths.get_filename_list('unet')), {'tooltip': 'Diffusion model list.'}, )
 
-NF4_DIR = (folder_paths.get_filename_list('checkpoints'), )
-CKPT_DIR = (folder_paths.get_filename_list('checkpoints'), {'tooltip': 'Uses included CLIP & VAE'}, )
-CLIP_DIR = (folder_paths.get_filename_list('clip'), )
+NF4_DIR = (copy.deepcopy(folder_paths.get_filename_list('checkpoints')), {'tooltip': 'Checkpoint model list.'}, )
+CKPT_DIR = (copy.deepcopy(folder_paths.get_filename_list('checkpoints')), {'tooltip': 'Checkpoint model list.'}, )
+CLIP_DIR = (copy.deepcopy(folder_paths.get_filename_list('clip')), {'tooltip': 'CLIP model list.'}, )
 
 # MODEL
 CLIP_IN = ('CLIP', {'tooltip': 'The CLIP model used for encoding the text.'})

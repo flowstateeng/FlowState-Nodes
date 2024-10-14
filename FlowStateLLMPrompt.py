@@ -6,6 +6,12 @@
 
 
 ##
+# SYSTEM STATUS
+##
+print(f'    - Loaded LLM Prompt & Prompt Output nodes.')
+
+
+##
 # FS IMPORTS
 ##
 from .FS_Types import *
@@ -18,6 +24,7 @@ from .FS_Assets import *
 ##
 import os, sys
 import importlib
+import warnings
 
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.realpath(__file__)), "comfy"))
 import comfy.sd
@@ -26,6 +33,11 @@ try:
     Llama = importlib.import_module('llama_cpp_cuda').Llama
 except ImportError:
     Llama = importlib.import_module('llama_cpp').Llama
+
+
+warnings.filterwarnings('ignore', message='clean_up_tokenization_spaces')
+warnings.filterwarnings("ignore", message="1Torch was not compiled with flash attention")
+warnings.filterwarnings("ignore", category=FutureWarning)
 
 
 ##
@@ -58,13 +70,13 @@ class FlowStatePromptLLM:
                 'text_prompt': STRING_PROMPT,
                 'prompt_type': (['extra_crispy', 'original'],),
                 'seed': SEED,
-                'model': (available_models,),
+                'llm_model': (available_models,),
                 'max_tokens': MAX_TOKENS,
                 'clip': CLIP_IN,
-                'q': FLOAT_CLIP,
-                'k': FLOAT_CLIP,
-                'v': FLOAT_CLIP,
-                'out': FLOAT_CLIP,
+                'q': FLOAT_CLIP_ATTN,
+                'k': FLOAT_CLIP_ATTN,
+                'v': FLOAT_CLIP_ATTN,
+                'out': FLOAT_CLIP_ATTN,
             }
         }
 
@@ -91,6 +103,16 @@ class FlowStatePromptLLM:
         output = clip.encode_from_tokens(tokens, return_pooled=True, return_dict=True)
         cond = output.pop("cond")
         return ([cond, output], )
+
+    @classmethod
+    def encode_text_flux(self, clip, clip_l, t5xxl, guidancet):
+        tokens = clip.tokenize(clip_l)
+        tokens["t5xxl"] = clip.tokenize(t5xxl)["t5xxl"]
+
+        output = clip.encode_from_tokens(tokens, return_pooled=True, return_dict=True)
+        cond = output.pop("cond")
+        output["guidance"] = guidance
+        return ([[cond, output]], )
 
     @classmethod
     def generate_msgs(self, instructions):
@@ -164,18 +186,23 @@ class FlowStatePromptLLM:
             {'role': 'user', 'content': instructions},
         ]
 
-    def generate_prompt(self, text_prompt, prompt_type, seed, model, max_tokens, clip, q, k, v, out):
+    def generate_prompt(self, text_prompt, prompt_type, seed, llm_model, max_tokens, clip, q, k, v, out):
+        print(f'\nFlowState LLM Prompt')
+
         multiplied_clip = self.multiply_clip_attn(clip, q, k, v, out)
         orig_conditioning = self.encode_text(multiplied_clip, text_prompt)
 
         if prompt_type == 'original':
+            print(f'  - Using original prompt.')
             return (orig_conditioning, orig_conditioning, 'LLM NOT SELECTED', text_prompt)
 
-        if prompt_type == 'extra_crispy' and not model.endswith('.gguf'):
+        if prompt_type == 'extra_crispy' and not llm_model.endswith('.gguf'):
+            print(f'  - Not a valid GGUF model.')
             return (orig_conditioning, orig_conditioning, 'NOT A GGUF MODEL', text_prompt)
 
-        if prompt_type == 'extra_crispy' and model.endswith('.gguf'):
-            model_path = os.path.join(GLOBAL_MODELS_DIR, model)
+        if prompt_type == 'extra_crispy' and llm_model.endswith('.gguf'):
+            print(f'  - Using LLM generated prompt.')
+            model_path = os.path.join(GLOBAL_MODELS_DIR, llm_model)
             generate_kwargs = {'max_tokens': max_tokens, 'temperature': 1.0, 'top_p': 0.9, 'top_k': 50, 'repeat_penalty': 1.2}
             loaded_model = Llama(model_path=model_path, n_gpu_layers=-1, seed=seed, verbose=False, n_ctx=2048,)
 
@@ -209,6 +236,7 @@ class FlowStatePromptLLMOutput:
         }
 
     def show_prompt(self, text, unique_id=None, extra_pnginfo=None):
+        print(f'  - Displaying output text.')
         if unique_id is not None and extra_pnginfo is not None and len(extra_pnginfo) > 0:
             workflow = None
             if "workflow" in extra_pnginfo:
@@ -219,4 +247,5 @@ class FlowStatePromptLLMOutput:
             if node:
                 node["widgets_values"] = [str(text)]
         return {"ui": {"text": (str(text),)}}
+
 

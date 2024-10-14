@@ -89,6 +89,7 @@ except:
 
 NF4_DIR = (folder_paths.get_filename_list('checkpoints'), )
 CKPT_DIR = (folder_paths.get_filename_list('checkpoints'), {'tooltip': 'Uses included CLIP & VAE'}, )
+CLIP_DIR = (folder_paths.get_filename_list('clip'), )
 
 # MODEL
 CLIP_IN = ('CLIP', {'tooltip': 'The CLIP model used for encoding the text.'})

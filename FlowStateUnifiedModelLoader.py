@@ -58,6 +58,7 @@ class FlowStateUnifiedModelLoader:
 
     @classmethod
     def INPUT_TYPES(s):
+        print(f' UNET_DIR: {UNET_DIR}')
         return {
             'required': {
                 'nf4_name': NF4_DIR,
@@ -65,8 +66,8 @@ class FlowStateUnifiedModelLoader:
                 'unet_name': UNET_DIR,
                 'weight_dtype': (['default', 'fp8_e4m3fn', 'fp8_e5m2'], ),
                 'model_type': (['ckpt', 'unet', 'nf4'],),
-                'clip_1': (folder_paths.get_filename_list('clip'), ),
-                'clip_2': (folder_paths.get_filename_list('clip'), ),
+                'clip_1': CLIP_DIR,
+                'clip_2': CLIP_DIR,
                 'clip_type': (['default', 'sdxl', 'sd3', 'flux'], ),
                 'vae_name': (['default'] + s.vae_list(), ),
             }

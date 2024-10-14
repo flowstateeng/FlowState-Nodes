@@ -82,6 +82,15 @@ FVD_AUG_LVL = ('FLOAT', {'default': 0.0, 'min': 0.0, 'max': 10.0, 'step': 0.01, 
 FVD_EXTEND_CT = ('INT', {'default': 1, 'min': 1, 'max': 100, 'step': 1, 'tooltip': 'Extend video by running sampler again on last video frame. Max 100; uses last frame of each new batch.'})
 
 # DIRECTORIES
+try:
+    UNET_DIR = (folder_paths.get_filename_list('diffusion_models'), {'tooltip': 'UNET model list.'})
+except:
+    UNET_DIR = (folder_paths.get_filename_list('unet'), {'tooltip': 'UNET model list.'})
+
+NF4_DIR = (folder_paths.get_filename_list('checkpoints'), {'tooltip': 'Checkpoint model list.'})
+CKPT_DIR = (folder_paths.get_filename_list('checkpoints'), {'tooltip': 'Checkpoint model list.'})
+CLIP_DIR = (folder_paths.get_filename_list('clip'), {'tooltip': 'CLIP model list.'})
+
 
 # MODEL
 CLIP_IN = ('CLIP', {'tooltip': 'The CLIP model used for encoding the text.'})

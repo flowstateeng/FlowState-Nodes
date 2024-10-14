@@ -5,6 +5,13 @@
 # Contact: johnathan@flowstateengineering.com | youtube.com/@flowstateeng
 
 
+
+##
+# SYSTEM STATUS
+##
+print(f'    - Loaded Latent Chooser node.')
+
+
 ##
 # FS IMPORTS
 ##
@@ -23,8 +30,6 @@ import os, sys
 import node_helpers
 import folder_paths
 
-sys.path.insert(0, os.path.join(os.path.dirname(os.path.realpath(__file__)), "comfy"))
-
 from PIL import Image, ImageOps, ImageSequence
 from comfy import model_management
 
@@ -37,9 +42,10 @@ class FlowStateLatentChooser:
     DESCRIPTION = 'Create a new batch of latent images to be denoised via sampling.'
     FUNCTION = 'create_latent'
     RETURN_TYPES = LATENT_CHOOSER
-    RETURN_NAMES = ('latent', 'width', 'height', )
+    RETURN_NAMES = ('latent', 'image', 'width', 'height', )
     OUTPUT_TOOLTIPS = (
         'The latent image batch.',
+        'The image batch.',
         'Image width.',
         'Image height.',
     )
@@ -55,12 +61,12 @@ class FlowStateLatentChooser:
 
         return {
             'required': {
-                'width': ('INT', {'default': 512, 'min': 16, 'max': MAX_RESOLUTION, 'step': 8, 'tooltip': 'The width of the latent images in pixels.'}),
-                'height': ('INT', {'default': 512, 'min': 16, 'max': MAX_RESOLUTION, 'step': 8, 'tooltip': 'The height of the latent images in pixels.'}),
-                'batch_size': ('INT', {'default': 1, 'min': 1, 'max': 4096, 'tooltip': 'The number of latent images in the batch.'}),
+                'width': IMG_WIDTH,
+                'height': IMG_HEIGHT,
+                'batch_size': LATENT_BATCH_SIZE,
                 'latent_type': (['empty_latent', 'input_img', 'imported_img'],),
                 'image': (sorted(files), {'image_upload': True}),
-                'vae': ('VAE', )
+                'vae': VAE_IN
             },
             'optional': {
                 'pixels': IMAGE
@@ -123,18 +129,23 @@ class FlowStateLatentChooser:
         return encoded, output_image
 
     def create_latent(self, latent_type, image, vae, width, height, batch_size=1, pixels=None):
+        print(f'\nFlowState Latent Chooser')
+
         if latent_type == 'empty_latent':
+            print(f'  - Preparing empty latent.')
             latent = self.generate(width, height, batch_size)
-            return ({'samples':latent}, width, height, )
+            return ({'samples':latent}, None, width, height, )
         elif latent_type == 'input_img':
+            print(f'  - Preparing latent from input image.')
             latent = vae.encode(pixels[:,:,:,:3])
             img_width = pixels.shape[2]
             img_height = pixels.shape[1]
-            return ({'samples':latent}, img_width, img_height, )
+            return ({'samples':latent}, pixels, img_width, img_height, )
         else:
+            print(f'  - Preparing latent from imported image.')
             latent, loaded_img = self.load_and_encode(image, vae)
             img_width = loaded_img.shape[2]
             img_height = loaded_img.shape[1]
-            return ({'samples':latent}, img_width, img_height, )
+            return ({'samples':latent}, loaded_img, img_width, img_height, )
 
 

@@ -15,8 +15,8 @@ print(f'  - Loading custom nodes...')
 ##
 # NODES
 ##
-# from .FlowStateFVDSampler import *
-# from .FlowStateUnifiedSampler import *
+from .FlowStateFVDSampler import *
+from .FlowStateUnifiedSampler import *
 from .FlowStateLLMPrompt import *
 from .FlowStateUnifiedModelLoader import *
 from .FlowStateLatentChooser import *

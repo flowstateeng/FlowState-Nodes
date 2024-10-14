@@ -11,8 +11,8 @@ print(f'  - Loading node name mappings...')
 # MAPPINGS
 ##
 NODE_CLASS_MAPPINGS = {
-    # 'FlowStateFVDSampler': FlowStateFVDSampler,
-    # 'FlowStateUnifiedSampler': FlowStateUnifiedSampler,
+    'FlowStateFVDSampler': FlowStateFVDSampler,
+    'FlowStateUnifiedSampler': FlowStateUnifiedSampler,
     'FlowStateUnifiedModelLoader': FlowStateUnifiedModelLoader,
     'FlowStatePromptLLM': FlowStatePromptLLM,
     'FlowStatePromptLLMOutput': FlowStatePromptLLMOutput,

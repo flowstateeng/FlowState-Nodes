@@ -72,7 +72,6 @@ class FlowStatePromptLLM:
                 'seed': SEED,
                 'llm_model': (available_models,),
                 'max_tokens': MAX_TOKENS,
-                'clip': CLIP_IN,
                 'q': FLOAT_CLIP_ATTN,
                 'k': FLOAT_CLIP_ATTN,
                 'v': FLOAT_CLIP_ATTN,

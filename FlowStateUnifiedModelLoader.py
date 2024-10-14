@@ -58,16 +58,15 @@ class FlowStateUnifiedModelLoader:
 
     @classmethod
     def INPUT_TYPES(s):
-        print(f' UNET_DIR: {UNET_DIR}')
         return {
             'required': {
-                'nf4_name': NF4_DIR,
-                'ckpt_name': CKPT_DIR,
-                'unet_name': UNET_DIR,
+                'nf4_name': (folder_paths.get_filename_list('diffusion_models'), {'tooltip': 'Checkpoint model list.'}),
+                'ckpt_name': (folder_paths.get_filename_list('diffusion_models'), {'tooltip': 'Checkpoint model list.'}),
+                'unet_name': (folder_paths.get_filename_list('diffusion_models'), {'tooltip': 'UNET model list.'}),
                 'weight_dtype': (['default', 'fp8_e4m3fn', 'fp8_e5m2'], ),
                 'model_type': (['ckpt', 'unet', 'nf4'],),
-                'clip_1': CLIP_DIR,
-                'clip_2': CLIP_DIR,
+                'clip_1': (folder_paths.get_filename_list('diffusion_models'), {'tooltip': 'CLIP model list.'}),
+                'clip_2': (folder_paths.get_filename_list('diffusion_models'), {'tooltip': 'CLIP model list.'}),
                 'clip_type': (['default', 'sdxl', 'sd3', 'flux'], ),
                 'vae_name': (['default'] + s.vae_list(), ),
             }

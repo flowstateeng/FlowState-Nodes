@@ -54,8 +54,8 @@ git clone https://github.com/flowstateeng/FlowState-Nodes.git
 ## FlowState Unified Sampler
 The new kid on the block is the FlowState Unified Sampler. Use this powerful sampler with your Flux AND Stable Diffusion models. Includes support for testing a variety of parameters in your batches. Add parameters and/or prompts to your output images for easy identification. Adjust font size and number of lines to include exactly the text you want. Control your terminal/CMD prompt output. Includes Latent Multiply and VAE Decode functionality, so no need for extra nodes in your workflow.
 <p align="center">
-  <img width='850' src='https://github.com/flowstateeng/FlowState-Nodes/blob/main/imgs/FS-Unified-Sampler.png' alt='FS LLM Image'/>
-  <img width='850' src='https://github.com/flowstateeng/FlowState-Nodes/blob/main/imgs/FS-Unified-Sampler-Output.png' alt='FS LLM Image'/>
+  <img width='850' src='https://github.com/flowstateeng/FlowState-Nodes/blob/main/imgs/FS-Unified-Sampler.png' alt='FS Unified Sampler Image'/>
+  <img width='850' src='https://github.com/flowstateeng/FlowState-Nodes/blob/main/imgs/FS-Unified-Sampler-Output.png' alt='FS Unified Sampler Image 2'/>
 </p><br/><br/>
 
 ## FlowState LLM Prompt & LLM Prompt Output

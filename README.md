@@ -31,30 +31,15 @@ Please consider a [Github Sponsorship](https://github.com/sponsors/flowstateeng)
 
 
 ## Status
-![Build Status](https://img.shields.io/badge/build-Stable-green.svg)
+![Build Status](https://img.shields.io/badge/build-Beta-green.svg)
 ![License](https://img.shields.io/badge/license-NONE-green.svg)
-<br/><br/>
-
-## Contents
-* [Prerequisites](https://github.com/flowstateeng/FlowState-Nodes/tree/master#prerequisites)
-* [Installation](https://github.com/flowstateeng/FlowState-Nodes/tree/master#installation)
-* [Usage](https://github.com/flowstateeng/FlowState-Nodes/tree/master#usage)
-* [Authors](https://github.com/flowstateeng/FlowState-Nodes/tree/master#authors)
-* [Contributing](https://github.com/flowstateeng/FlowState-Nodes/tree/master#contributing)
-* [Acknowledgments](https://github.com/flowstateeng/FlowState-Nodes/tree/master#acknowledgments)
-* [License](https://github.com/flowstateeng/FlowState-Nodes/tree/master#license)
-<br/>
-
-## Prerequisites
-  * ComfyUI
-  * Models Required by Individual Nodes
 <br/><br/>
 
 
 ## Installation
 [Video Demo](https://youtu.be/5wAHg8OvgbM?si=Uhl5oNx51d1y7XWQ) in my [ComfyUI Playlist](https://youtube.com/playlist?list=PLopF-DMGUFkQqh_FXP03qES4Lq-wY34kO&si=u4ltujwGIX-sZLYG)
 
-Paste this link into your ComfyUI Manager > "Install via Git URL: https://github.com/flowstateeng/FlowState-Nodes.git
+Paste this link into your ComfyUI Manager > Install via Git URL: https://github.com/flowstateeng/FlowState-Nodes.git
 
 OR
 
@@ -66,6 +51,13 @@ git clone https://github.com/flowstateeng/FlowState-Nodes.git
 
 
 # Current Nodes
+## FlowState Unified Sampler
+The new kid on the block is the FlowState Unified Sampler. Use this powerful sampler with your Flux AND Stable Diffusion models. Includes support for testing a variety of parameters in your batches. Add parameters and/or prompts to your output images for easy identification. Adjust font size and number of lines to include exactly the text you want. Control your terminal/CMD prompt output. Includes Latent Multiply and VAE Decode functionality, so no need for extra nodes in your workflow.
+<p align="center">
+  <img width='850' src='https://github.com/flowstateeng/FlowState-Nodes/blob/main/imgs/FS-Unified-Sampler.png' alt='FS LLM Image'/>
+  <img width='850' src='https://github.com/flowstateeng/FlowState-Nodes/blob/main/imgs/FS-Unified-Sampler-Output.png' alt='FS LLM Image'/>
+</p><br/><br/>
+
 ## FlowState LLM Prompt & LLM Prompt Output
 Tighten up your workflow with the FlowState LLM Prompt. Load a .gguf model to generate sophisticated image prompts, or simply flip a switch to use your own. Handles the text encoding for you internally, so you don't need another Text Encode node off to the side. Outputs the original and generated text and conditioning, in case you want to pass it to another node. Also includes the Clip Attention Multiply functionality, thus eliminating another node from your workflow.
 <p align="center">
@@ -73,7 +65,7 @@ Tighten up your workflow with the FlowState LLM Prompt. Load a .gguf model to ge
 </p><br/><br/>
 
 ## FlowState Unified Model Loader
-Simplify your model loading with the FlowState Unified Model Loader. Load your UNET and Checkpoint models in a single node. Including support for Flux NF4! No need to have three separate nodes for Stable Diffusion, Flux Dev/Schnell and Flux NF4. Do it all in a single node!
+Simplify your model loading with the FlowState Unified Model Loader. Load your UNET and Checkpoint models in a single node. Including support for Flux NF4! (Flux .gguf support coming soon!) Includes global seed you can use for your entire workflow. No need to have three separate nodes for Stable Diffusion, Flux Dev/Schnell and Flux NF4. Do it all in a single node!
 <p align="center">
   <img width='850' src='https://github.com/flowstateeng/FlowState-Nodes/blob/main/imgs/FS-Unified-Model-Loader.png' alt='FS Unified Model Loader Image'/>
 </p><br/><br/>

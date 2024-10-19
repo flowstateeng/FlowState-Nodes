@@ -22,11 +22,11 @@ from .FS_Assets import *
 ##
 # LIBRARIES
 ##
-import os, sys
+import os, sys, time, copy, itertools
 import importlib
 import warnings
 
-sys.path.insert(0, os.path.join(os.path.dirname(os.path.realpath(__file__)), "comfy"))
+import comfy.utils
 import comfy.sd
 
 try:
@@ -34,6 +34,7 @@ try:
 except ImportError:
     Llama = importlib.import_module('llama_cpp').Llama
 
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.realpath(__file__)), "comfy"))
 
 warnings.filterwarnings('ignore', message='clean_up_tokenization_spaces')
 warnings.filterwarnings("ignore", message="1Torch was not compiled with flash attention")
@@ -45,15 +46,23 @@ warnings.filterwarnings("ignore", category=FutureWarning)
 ##
 class FlowStatePromptLLM:
     CATEGORY = 'FlowState/LLM'
-    DESCRIPTION = 'Generate an image prompt using an LLM.'
-    FUNCTION = 'generate_prompt'
+    DESCRIPTION = (
+        'Generate an image prompt using an LLM. If using multiple parameters, will need to be '
+        'paired with a sampler that can accomodate them, like the FlowState Unified Sampler.'
+    )
+    FUNCTION = 'generate_prompts'
     RETURN_TYPES = FS_LLM_OUT
-    RETURN_NAMES = ('selected_conditioning', 'orig_conditioning', 'llm_text', 'orig_text', )
+    RETURN_NAMES = (
+        'positive_conditioning',
+        'negative_conditioning',
+        'positive_prompt',
+        'negative_prompt',
+    )
     OUTPUT_TOOLTIPS = (
-        'Conditioning of the embedded original or LLM text used to guide the diffusion model.',
-        'Conditioning of the embedded original text used to guide the diffusion model.',
-        'Generated text prompt from the LLM.',
-        'Your original text prompt.',
+        'Selected positive conditioning(s) used to guide the diffusion model.',
+        'Original negative conditioning(s) used to guide the diffusion model.',
+        'Selected positive text prompt(s).',
+        'Original negative text prompt(s).',
     )
 
     @classmethod
@@ -65,26 +74,44 @@ class FlowStatePromptLLM:
         else:
             available_models.append('no available models')
 
+        expanded_model_list = []
+        for sc in range(1, len(available_models) + 1):
+            combinations = itertools.combinations(available_models, sc)
+            expanded_model_list.extend([', '.join(comb) for comb in combinations])
+
         return {
             'required': {
-                'text_prompt': STRING_PROMPT,
-                'prompt_type': (['extra_crispy', 'original'],),
+                'clip': CLIP_IN,
+                'positive_text_prompt': STRING_PROMPT_POSITIVE,
+                'negative_text_prompt': STRING_PROMPT_NEGATIVE,
+                'prompt_type': LLM_PROMPT_TYPE,
                 'seed': SEED,
-                'llm_model': (available_models,),
-                'max_tokens': MAX_TOKENS,
-                'q': FLOAT_CLIP_ATTN,
-                'k': FLOAT_CLIP_ATTN,
-                'v': FLOAT_CLIP_ATTN,
-                'out': FLOAT_CLIP_ATTN,
+                'llm_model': (expanded_model_list, {'tooltip': 'All combinations of your available models.'}, ),
+                'seed_str_list': SEED_LIST,
+                'max_tokens': MAX_TOKENS_LIST,
+                'q': Q_LIST,
+                'k': K_LIST,
+                'v': V_LIST,
+                'out': OUT_LIST,
             }
         }
 
     @classmethod
+    def format_num(self, num, num_type, alt):
+        num_to_use = num
+        try:
+            num_to_use = num_type(num_to_use)
+        except:
+            num_to_use = alt
+
+        return num_to_use
+
+    @classmethod
     def multiply_clip_attn(self, clip, q, k, v, out):
         multiplied = clip.clone()
-        sd = multiplied.patcher.model_state_dict()
+        state_dict = multiplied.patcher.model_state_dict()
 
-        for key in sd:
+        for key in state_dict:
             if key.endswith("self_attn.q_proj.weight") or key.endswith("self_attn.q_proj.bias"):
                 multiplied.add_patches({key: (None,)}, 0.0, q)
             if key.endswith("self_attn.k_proj.weight") or key.endswith("self_attn.k_proj.bias"):
@@ -102,16 +129,6 @@ class FlowStatePromptLLM:
         output = clip.encode_from_tokens(tokens, return_pooled=True, return_dict=True)
         cond = output.pop("cond")
         return ([cond, output], )
-
-    @classmethod
-    def encode_text_flux(self, clip, clip_l, t5xxl, guidancet):
-        tokens = clip.tokenize(clip_l)
-        tokens["t5xxl"] = clip.tokenize(t5xxl)["t5xxl"]
-
-        output = clip.encode_from_tokens(tokens, return_pooled=True, return_dict=True)
-        cond = output.pop("cond")
-        output["guidance"] = guidance
-        return ([[cond, output]], )
 
     @classmethod
     def generate_msgs(self, instructions):
@@ -185,66 +202,228 @@ class FlowStatePromptLLM:
             {'role': 'user', 'content': instructions},
         ]
 
-    def generate_prompt(self, text_prompt, prompt_type, seed, llm_model, max_tokens, clip, q, k, v, out):
-        print(f'\nFlowState LLM Prompt')
-
-        multiplied_clip = self.multiply_clip_attn(clip, q, k, v, out)
-        orig_conditioning = self.encode_text(multiplied_clip, text_prompt)
+    @classmethod
+    def generate_prompt(self, clip, positive_text_prompt, negative_text_prompt, prompt_type, seed, llm_model, max_tokens, q, k, v, out):
+        param_string = (
+            f'llm_prompt_type:{prompt_type},'
+            f'llm_seed:{seed},'
+            f'llm_model:{llm_model},'
+            f'llm_max_tokens:{max_tokens},'
+            f'q:{q},'
+            f'k:{k},'
+            f'v:{v},'
+            f'out:{out}'
+        )
 
         if prompt_type == 'original':
-            print(f'  - Using original prompt.')
-            return (orig_conditioning, orig_conditioning, 'LLM NOT SELECTED', text_prompt)
+            param_string = param_string.replace(f'llm_seed:{seed},llm_model:{llm_model},llm_max_tokens:{max_tokens},', '')
+
+        multiplied_clip = self.multiply_clip_attn(clip, q, k, v, out)
+        neg_prompt = negative_text_prompt.replace('\n\n', '. ').replace('\n', '. ')
+        pos_prompt = positive_text_prompt.replace('\n\n', '. ').replace('\n', '. ')
+        out_prompt = None
+
+        if prompt_type == 'original':
+            print(f'  - Using original prompt.\n')
+            positive_conditioning = self.encode_text(multiplied_clip, pos_prompt)
+            negative_conditioning = self.encode_text(multiplied_clip, neg_prompt)
+            tagged_pos = f'{FS_LLM_PROMPT_TAG}-{param_string}-----{pos_prompt}'
+            out_prompt = (positive_conditioning, negative_conditioning, tagged_pos, neg_prompt, )
 
         if prompt_type == 'extra_crispy' and not llm_model.endswith('.gguf'):
-            print(f'  - Not a valid GGUF model.')
-            return (orig_conditioning, orig_conditioning, 'NOT A GGUF MODEL', text_prompt)
+            print(f'  - Not a valid GGUF model.\n')
+            positive_conditioning = self.encode_text(multiplied_clip, pos_prompt)
+            negative_conditioning = self.encode_text(multiplied_clip, neg_prompt)
+            tagged_pos = f'{FS_LLM_PROMPT_TAG}-{param_string}-----NOT A VALID GGUF MODEL - {pos_prompt}'
+            out_prompt = (positive_conditioning, negative_conditioning, tagged_pos, neg_prompt, )
 
         if prompt_type == 'extra_crispy' and llm_model.endswith('.gguf'):
-            print(f'  - Using LLM generated prompt.')
+            print(f'  - Using LLM generated prompt.\n')
             model_path = os.path.join(GLOBAL_MODELS_DIR, llm_model)
-            generate_kwargs = {'max_tokens': max_tokens, 'temperature': 1.0, 'top_p': 0.9, 'top_k': 50, 'repeat_penalty': 1.2}
             loaded_model = Llama(model_path=model_path, n_gpu_layers=-1, seed=seed, verbose=False, n_ctx=2048,)
 
-            llm_messages = self.generate_msgs(f'Generate a prompt from {text_prompt}')
+            generate_kwargs = {'max_tokens': max_tokens, 'temperature': 1.0, 'top_p': 0.9, 'top_k': 50, 'repeat_penalty': 1.2}
+            llm_messages = self.generate_msgs(f'Generate a prompt from {pos_prompt}')
+
             llm_prompt = loaded_model.create_chat_completion(llm_messages, **generate_kwargs)
             llm_prompt_cleaned = llm_prompt['choices'][0]['message']['content'].strip()
 
             llm_conditioning = self.encode_text(multiplied_clip, llm_prompt_cleaned)
+            negative_conditioning = self.encode_text(multiplied_clip, neg_prompt)
+            tagged_pos_llm = f'{FS_LLM_PROMPT_TAG}-{param_string}-----{llm_prompt_cleaned}'.replace('\n\n', '. ').replace('\n', '. ')
 
-            return (llm_conditioning, orig_conditioning, llm_prompt_cleaned, text_prompt)
+            out_prompt = (llm_conditioning, negative_conditioning, tagged_pos_llm, neg_prompt, )
+
+        return out_prompt
+
+    @classmethod
+    def extract_prompt_parts(self, prompts_out, clip, pos_prompts, neg_prompts, run_prompt, seed_to_use, run_model,
+            token_to_use, q_to_use, k_to_use, v_to_use, out_to_use):
+
+        prompts_out_copy = copy.deepcopy(prompts_out)
+
+        pos_count = len(pos_prompts)
+        neg_count = len(neg_prompts)
+
+        equal_counts = pos_count == neg_count
+        different_pos = False if all(prompt == pos_prompts[0] for prompt in pos_prompts) else True
+        different_neg = False if all(prompt == neg_prompts[0] for prompt in neg_prompts) else True
+
+        one_neg_to_many_pos = neg_count == 1 and pos_count > 1
+        one_pos_to_many_neg = pos_count == 1 and neg_count > 1
+
+        one_to_one = equal_counts and different_pos and different_neg
+        same_neg_to_many_pos = (equal_counts and different_pos and not different_neg) or one_neg_to_many_pos
+        same_pos_to_many_neg = (equal_counts and different_neg and not different_pos) or one_pos_to_many_neg
+
+        if one_to_one or same_neg_to_many_pos:
+            for p, pos_prompt in enumerate(pos_prompts):
+                neg_prompt = neg_prompts[p] if one_to_one else neg_prompts[0]
+                prompt_parts = self.generate_prompt(
+                    clip, pos_prompt, neg_prompt, run_prompt, seed_to_use, run_model,
+                    token_to_use, q_to_use, k_to_use, v_to_use, out_to_use
+                )
+                prompts_out_copy[0] += [prompt_parts[0]]
+                prompts_out_copy[1] += [prompt_parts[1]]
+                prompts_out_copy[2] += [prompt_parts[2]]
+                prompts_out_copy[3] += [prompt_parts[3]]
+
+        elif same_pos_to_many_neg:
+            for n, neg_prompt in enumerate(neg_prompts):
+                pos_prompt = pos_prompts[n]
+                prompt_parts = self.generate_prompt(
+                    clip, pos_prompt, neg_prompt, run_prompt, seed_to_use, run_model,
+                    token_to_use, q_to_use, k_to_use, v_to_use, out_to_use
+                )
+                prompts_out_copy[0] += [prompt_parts[0]]
+                prompts_out_copy[1] += [prompt_parts[1]]
+                prompts_out_copy[2] += [prompt_parts[2]]
+                prompts_out_copy[3] += [prompt_parts[3]]
+
+        else:
+            for p, pos_prompt in enumerate(pos_prompts):
+                for n, neg_prompt in enumerate(neg_prompts):
+                    prompt_parts = self.generate_prompt(
+                        clip, pos_prompt, neg_prompt, run_prompt, seed_to_use, run_model,
+                        token_to_use, q_to_use, k_to_use, v_to_use, out_to_use
+                    )
+                    prompts_out_copy[0] += [prompt_parts[0]]
+                    prompts_out_copy[1] += [prompt_parts[1]]
+                    prompts_out_copy[2] += [prompt_parts[2]]
+                    prompts_out_copy[3] += [prompt_parts[3]]
+
+        return prompts_out_copy
+
+    def generate_prompts(self, clip, positive_text_prompt, negative_text_prompt, prompt_type, seed, llm_model, seed_str_list, max_tokens, q, k, v, out):
+        print(f'\n\nFlowState LLM Prompt')
+        start_time = time.time()
+
+        positive_prompts = [prompt.strip() for prompt in positive_text_prompt.split('-----')]
+        negative_prompts = [prompt.strip() for prompt in negative_text_prompt.split('-----')]
+        seed_list = seed_str_list.replace(' ', '').split(',')
+        model_list = llm_model.replace(' ', '').split(',')
+        token_list = max_tokens.replace(' ', '').split(',')
+        q_list = q.replace(' ', '').split(',')
+        k_list = k.replace(' ', '').split(',')
+        v_list = v.replace(' ', '').split(',')
+        out_list = out.replace(' ', '').split(',')
+
+        prompts_out = [[], [], [], []]
+
+        for token_num, run_token in enumerate(token_list):
+            token_to_use = self.format_num(run_token, int, seed)
+
+            for q_num, run_q in enumerate(q_list):
+                q_to_use = self.format_num(run_q, float, 1.0)
+
+                for k_num, run_k in enumerate(k_list):
+                    k_to_use = self.format_num(run_k, float, 1.0)
+
+                    for v_num, run_v in enumerate(v_list):
+                        v_to_use = self.format_num(run_v, float, 1.0)
+
+                        for out_num, run_out in enumerate(out_list):
+                            out_to_use = self.format_num(run_out, float, 1.0)
+
+                            for model_num, run_model in enumerate(model_list):
+                                both_prompt_types = prompt_type == 'both'
+                                prompt_type_list = ['extra_crispy', 'original'] if both_prompt_types else [prompt_type]
+
+                                for prompt_num, run_prompt in enumerate(prompt_type_list):
+
+                                    if run_prompt == 'original':
+                                        prompts_out = self.extract_prompt_parts(
+                                            prompts_out, clip, positive_prompts, negative_prompts, run_prompt, 0, run_model,
+                                            token_to_use, q_to_use, k_to_use, v_to_use, out_to_use
+                                        )
+                                    else:
+                                        for seed_num, run_seed in enumerate(seed_list):
+                                            seed_to_use = self.format_num(run_seed, int, seed)
+
+                                            prompts_out = self.extract_prompt_parts(
+                                                prompts_out, clip, positive_prompts, negative_prompts, run_prompt, seed_to_use, run_model,
+                                                token_to_use, q_to_use, k_to_use, v_to_use, out_to_use
+                                            )
+
+        prompt_gen_duration = time.time() - start_time
+        prompt_gen_mins = int(prompt_gen_duration // 60)
+        prompt_gen_secs = int(prompt_gen_duration - prompt_gen_mins * 60)
+
+        print(
+            f'\n\n\nFlowState LLM Prompt - Prompt generation complete.'
+            f'\n  - Generation Time: {prompt_gen_mins}m {prompt_gen_secs}s'
+        )
+
+        if len(prompts_out[0]) == 1:
+            return (prompts_out[0][0], prompts_out[1][0], prompts_out[2][0], prompts_out[3][0], )
+
+        return (prompts_out[0], prompts_out[1], prompts_out[2], prompts_out[3], )
 
 
 class FlowStatePromptLLMOutput:
     CATEGORY = 'FlowState/LLM'
-    DESCRIPTION = 'Show LLM generated output.'
+    DESCRIPTION = 'Show selected text output.'
     FUNCTION = 'show_prompt'
     RETURN_TYPES = STRING_OUT
-    RETURN_NAMES = ('llm_prompt',)
+    RETURN_NAMES = ('selected_prompt',)
     OUTPUT_TOOLTIPS = ('Generated prompt from the LLM.',)
     OUTPUT_NODE = True
 
     @classmethod
     def INPUT_TYPES(cls):
         return {
-            "required": {
-                "text": ANY,
+            'required': {
+                'text': ANY,
             },
-            "hidden": {
-                "unique_id": "UNIQUE_ID", "extra_pnginfo": "EXTRA_PNGINFO",
+            'hidden': {
+                'unique_id': 'UNIQUE_ID', 'extra_pnginfo': 'EXTRA_PNGINFO',
             },
         }
 
     def show_prompt(self, text, unique_id=None, extra_pnginfo=None):
         print(f'  - Displaying output text.')
+        in_text = copy.deepcopy(text) if isinstance(text, list) else [copy.deepcopy(text)]
+        out_text = ''
+        separator = '-' * 25
+
+        for p, prompt in enumerate(in_text):
+            if FS_LLM_PROMPT_TAG in prompt:
+                build_text = prompt.replace(f'{FS_LLM_PROMPT_TAG}-', '')
+                out_split = build_text.split('-----')
+                param_str = out_split[0].replace(',', ', ').replace('llm_', '').replace(':', ': ')
+                build_text = f'PROMPT {p + 1}:\n{param_str}\n{separator}\n{out_split[1]}\n\n\n'
+                out_text += build_text
+            else:
+                out_text += f'PROMPT {p + 1}:\n{separator}\n{prompt}\n\n\n'
         if unique_id is not None and extra_pnginfo is not None and len(extra_pnginfo) > 0:
             workflow = None
-            if "workflow" in extra_pnginfo:
-                workflow = extra_pnginfo["workflow"]
+            if 'workflow' in extra_pnginfo:
+                workflow = extra_pnginfo['workflow']
             node = None
-            if workflow and "nodes" in workflow:
-                node = next((x for x in workflow["nodes"] if str(x["id"]) == unique_id), None)
+            if workflow and 'nodes' in workflow:
+                node = next((x for x in workflow['nodes'] if str(x['id']) == unique_id), None)
             if node:
-                node["widgets_values"] = [str(text)]
-        return {"ui": {"text": (str(text),)}}
+                node['widgets_values'] = [str(out_text)]
+        return {'ui': {'text': (str(out_text),)}}
 
 

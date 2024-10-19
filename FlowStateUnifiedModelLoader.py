@@ -24,9 +24,10 @@ from .FS_Assets import *
 ##
 import torch
 
-import os, sys
+import os, sys, time, io
 import folder_paths
 import warnings
+from contextlib import redirect_stdout
 
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.realpath(__file__)), "comfy"))
 import comfy.sd
@@ -49,26 +50,29 @@ class FlowStateUnifiedModelLoader:
     DESCRIPTION = 'Load checkpoints and UNETs, includes NF4 support.'
     FUNCTION = 'load'
     RETURN_TYPES = MODEL_UNIFIED
-    RETURN_NAMES = ('model', 'clip', 'vae', )
+    RETURN_NAMES = ('model', 'clip', 'vae', 'seed', 'model_type', )
     OUTPUT_TOOLTIPS = (
         'Checkpoint or UNET model.',
         'The CLIP model used for encoding text prompts.',
         'The VAE model used for encoding and decoding images to and from latent space.',
+        'Global seed.',
+        'Type of model to use.',
     )
 
     @classmethod
     def INPUT_TYPES(s):
         return {
             'required': {
-                'nf4_name': NF4_DIR,
-                'ckpt_name': CKPT_DIR,
-                'unet_name': UNET_DIR,
+                'nf4_model': NF4_DIR,
+                'sd_model': CKPT_DIR,
+                'unet_model': UNET_DIR,
                 'weight_dtype': (['default', 'fp8_e4m3fn', 'fp8_e5m2'], ),
-                'model_type': (['ckpt', 'unet', 'nf4'],),
+                'model_type': (['NF4', 'UNET', 'SD'],),
                 'clip_1': CLIP_DIR,
                 'clip_2': CLIP_DIR,
                 'clip_type': (['default', 'sdxl', 'sd3', 'flux'], ),
                 'vae_name': (['default'] + s.vae_list(), ),
+                'seed': SEED,
             }
         }
 
@@ -144,12 +148,16 @@ class FlowStateUnifiedModelLoader:
 
     @classmethod
     def load_vae(self, vae_name):
-        if vae_name in ["taesd", "taesdxl", "taesd3", "taef1"]:
-            sd = self.load_taesd(vae_name)
-        else:
-            vae_path = folder_paths.get_full_path_or_raise("vae", vae_name)
-            sd = load_torch_file(vae_path)
-        vae = comfy.sd.VAE(sd=sd)
+        vae = None
+        vae_path = None
+        captured_output = io.StringIO()
+        with redirect_stdout(captured_output):
+            if vae_name in ["taesd", "taesdxl", "taesd3", "taef1"]:
+                vae_path = self.load_taesd(vae_name)
+            else:
+                vae_path = folder_paths.get_full_path_or_raise("vae", vae_name)
+                vae_path = load_torch_file(vae_path)
+            vae = comfy.sd.VAE(sd=vae_path)
         return vae
 
     @classmethod
@@ -163,59 +171,84 @@ class FlowStateUnifiedModelLoader:
         elif model_type == "flux":
             clip_type = comfy.sd.CLIPType.FLUX
 
-        clip = comfy.sd.load_clip(ckpt_paths=[clip_path1, clip_path2], embedding_directory=folder_paths.get_folder_paths("embeddings"), clip_type=clip_type)
+        clip = None
+        captured_output = io.StringIO()
+        with redirect_stdout(captured_output):
+            clip = comfy.sd.load_clip(ckpt_paths=[clip_path1, clip_path2], embedding_directory=folder_paths.get_folder_paths("embeddings"), clip_type=clip_type)
+
         return clip
 
-    def load(self, nf4_name, ckpt_name, unet_name, weight_dtype, model_type, clip_1, clip_2, clip_type, vae_name):
-        print(
-            f'\nFlowState Unified Model Loader'
-            f'\n  - Preparing loader'
-        )
-
+    @classmethod
+    def select_models(self, nf4_model, sd_model, unet_model, weight_dtype, model_type, clip_1, clip_2, clip_type, vae_name):
         model, clip, vae = None, None, None
+        model_fname, clip_fname, vae_fname = None, None, None
 
-        if model_type == 'nf4':
-            print(f'  - Loading NF4: {nf4_name}\n')
-            loaded_model = CheckpointLoaderNF4().load_checkpoint(nf4_name)
+        if model_type == 'NF4':
+            model_fname = nf4_model
+            loaded_model = CheckpointLoaderNF4().load_checkpoint(nf4_model)
             model = loaded_model[0]
             if clip_type == 'default':
-                print(f'\n  - Loading included clip')
+                clip_fname = 'included'
                 clip = loaded_model[1]
             if vae_name == 'default':
-                print(f'\n  - Loading included vae')
+                vae_fname = 'included'
                 vae = loaded_model[2]
 
-        if model_type == 'ckpt':
-            print(f'  - Loading SD: {ckpt_name}\n')
-            loaded_model = CheckpointLoaderSimple().load_checkpoint(ckpt_name)
+        if model_type == 'SD':
+            model_fname = sd_model
+            loaded_model = CheckpointLoaderSimple().load_checkpoint(sd_model)
             model = loaded_model[0]
             if clip_type == 'default':
-                print(f'\n  - Loading included clip')
+                clip_fname = 'included'
                 clip = loaded_model[1]
             if vae_name == 'default':
-                print(f'\n  - Loading included vae')
+                vae_fname = 'included'
                 vae = loaded_model[2]
 
-        if model_type == 'unet':
-            print(f'  - Loading UNET: {unet_name}\n')
-            model = UNETLoader().load_unet(unet_name, weight_dtype)[0]
+        if model_type == 'UNET':
+            model_fname = unet_model
+            model = UNETLoader().load_unet(unet_model, weight_dtype)[0]
+            print(f'\n\n UNET ({len(model)}): {model} \n\n')
 
         if vae == None and vae_name != 'default':
-            print(f'\n  - Loading: {vae_name}')
+            vae_fname = vae_name
             vae = self.load_vae(vae_name)
 
         if clip == None and clip_type != 'default':
-            print(f'\n  - Loading: {clip_1} & {clip_2}')
+            clip_fname = f'{clip_1} & {clip_2}'
             clip = self.load_clip(clip_1, clip_2, clip_type)
 
         if vae == None:
-            vae_name = self.vae_list()[0]
+            vae_fname = self.vae_list()[0]
             vae = self.load_vae(vae_name)
-            print(f'\n  - No VAE selected. Loading: {vae_name}')
 
         if clip == None:
-            print(f'\n  - No clip type selected. Loading Flux: {clip_1} & {clip_2}')
+            clip_fname = f'{clip_1} & {clip_2}'
             clip = self.load_clip(clip_1, clip_2, 'flux')
 
-        return (model, clip, vae,)
+        return model, clip, vae, model_fname, clip_fname, vae_fname
+
+    def load(self, nf4_model, sd_model, unet_model, weight_dtype, model_type, clip_1, clip_2, clip_type, vae_name, seed):
+        print(
+            f'\n\nFlowState Unified Model Loader'
+            f'\n  - Preparing loader\n'
+        )
+
+        start_time = time.time()
+
+        model, clip, vae, model_name, clip_name, vae_name = self.select_models(nf4_model, sd_model, unet_model, weight_dtype, model_type, clip_1, clip_2, clip_type, vae_name)
+
+        loading_duration = time.time() - start_time
+        loading_mins = int(loading_duration // 60)
+        loading_secs = int(loading_duration - loading_mins * 60)
+
+        print(
+            f'\nFlowState Unified Model Loader - Loading complete.'
+            f'\n  - Model Name: {model_name}'
+            f'\n  - VAE Name: {vae_name}'
+            f'\n  - CLIP Name: {clip_name}'
+            f'\n  - Loading Time: {loading_mins}m {loading_secs}s\n'
+        )
+
+        return (model, clip, vae, seed, model_type, )
 

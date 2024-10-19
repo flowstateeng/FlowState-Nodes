@@ -63,7 +63,6 @@ class FlowStateLatentChooser:
             'required': {
                 'width': IMG_WIDTH,
                 'height': IMG_HEIGHT,
-                'batch_size': LATENT_BATCH_SIZE,
                 'latent_type': (['empty_latent', 'input_img', 'imported_img'],),
                 'image': (sorted(files), {'image_upload': True}),
                 'vae': VAE_IN
@@ -75,7 +74,7 @@ class FlowStateLatentChooser:
 
     @classmethod
     def generate(self, width, height, batch_size=1):
-        latent = torch.zeros([batch_size, 4, height // 8, width // 8], device=self.device)
+        latent = torch.zeros([batch_size, 16, height // 8, width // 8], device=self.device)
         return latent
 
     @classmethod
@@ -128,12 +127,12 @@ class FlowStateLatentChooser:
         encoded = vae.encode(output_image[:,:,:,:3])
         return encoded, output_image
 
-    def create_latent(self, latent_type, image, vae, width, height, batch_size=1, pixels=None):
-        print(f'\nFlowState Latent Chooser')
+    def create_latent(self, latent_type, image, vae, width, height, pixels=None):
+        print(f'\n\n\nFlowState Latent Chooser')
 
         if latent_type == 'empty_latent':
             print(f'  - Preparing empty latent.')
-            latent = self.generate(width, height, batch_size)
+            latent = self.generate(width, height)
             return ({'samples':latent}, None, width, height, )
         elif latent_type == 'input_img':
             print(f'  - Preparing latent from input image.')

@@ -250,5 +250,8 @@ class FlowStateUnifiedModelLoader:
             f'\n  - Loading Time: {loading_mins}m {loading_secs}s\n'
         )
 
-        return (model, clip, vae, seed, model_type, )
+        model_type_out = 'SD' if model_type == 'SD' else 'FLUX'
+
+        return (model, clip, vae, seed, [model_type_out], )
+
 

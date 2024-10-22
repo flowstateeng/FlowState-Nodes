@@ -59,10 +59,11 @@ class FlowStateUnifiedSampler:
     DESCRIPTION = ('Applies Flux or SD model to input conditioning to produce an image.')
     FUNCTION = 'execute'
     RETURN_TYPES = SAMPLER_UNIFIED
-    RETURN_NAMES = ('images', 'latents', )
+    RETURN_NAMES = ('images', 'latents', 'fs_params' )
     OUTPUT_TOOLTIPS = (
         'The image batch.',
         'The latent batch.',
+        'The parameters used for the image batch.',
     )
 
     def __init__(self):
@@ -92,7 +93,7 @@ class FlowStateUnifiedSampler:
 
         return {
             'required': {
-                'model_type': (['FLUX', 'SD'], ),
+                'model_type': FS_MODEL_TYPE_LIST,
                 'model': MODEL_IN,
                 'latent_batch': LATENT_IN,
                 'vae': VAE_IN,
@@ -407,6 +408,17 @@ class FlowStateUnifiedSampler:
                 'negative': negative_prompt if model_type == 'SD' else None
             }
         }
+        fvd_out_params = copy.deepcopy(params)
+        del fvd_out_params['model_type']
+        del fvd_out_params['denoise']
+        del fvd_out_params['steps']
+        del fvd_out_params['add_params']
+        del fvd_out_params['add_prompt']
+        del fvd_out_params['prompt']
+        fvd_out_params['model'] = model
+        fvd_out_params['vae'] = vae
+        fvd_out_params['positive_conditioning'] = positive_conditioning
+
         if fs_llm_params:
             fs_llm_params_split = fs_llm_params.split(',')
             for fs_llm_param in fs_llm_params_split:
@@ -503,7 +515,7 @@ class FlowStateUnifiedSampler:
         if add_both:
             img_out = self.add_params(img_out, print_params, width, height, font_size, added_lines)
 
-        return img_out, latent_out, params
+        return img_out, latent_out, params, fvd_out_params
 
     def execute(self, model_type, model, positive_conditioning, negative_conditioning, positive_prompt, negative_prompt, latent_batch,
                 vae, seed, added_lines, seed_str_list, sampling_algorithm, scheduling_algorithm, guidance, steps, denoise, max_shift, base_shift,
@@ -517,6 +529,7 @@ class FlowStateUnifiedSampler:
         img_out = []
         latent_out = []
         params_out = []
+        fvd_params_out = []
 
         pos_cond_list = positive_conditioning if isinstance(positive_conditioning, list) else [positive_conditioning]
         pos_prompt_list = positive_prompt if isinstance(positive_prompt, list) else [positive_prompt]
@@ -524,7 +537,9 @@ class FlowStateUnifiedSampler:
         neg_cond_list = negative_conditioning if isinstance(negative_conditioning, list) else [negative_conditioning]
         neg_prompt_list = negative_prompt if isinstance(negative_prompt, list) else [negative_prompt]
 
-        if model_type != 'SD':
+        selected_model = model_type if isinstance(model_type, str) else model_type[0]
+
+        if selected_model != 'SD':
             neg_cond_list = [None]
             neg_prompt_list = [None]
 
@@ -546,8 +561,8 @@ class FlowStateUnifiedSampler:
             pos_prompt = pos_prompt_list[prompt_num]
             neg_prompt = None
             neg_cond = None
-            if model_type == 'SD': neg_cond = neg_cond_list[prompt_num]
-            if model_type == 'SD': neg_prompt = neg_prompt_list[prompt_num]
+            if selected_model == 'SD': neg_cond = neg_cond_list[prompt_num]
+            if selected_model == 'SD': neg_prompt = neg_prompt_list[prompt_num]
 
             is_fs_llm_prompt = pos_prompt.startswith(f'{FS_LLM_PROMPT_TAG}-')
             fs_llm_params = None
@@ -582,8 +597,8 @@ class FlowStateUnifiedSampler:
                                             for multiplier_num, run_multiplier in enumerate(multiplier_list):
                                                 multiplier_to_use = self.format_num(run_multiplier, float, 1.0)
 
-                                                batch_img, batch_latent, batch_params = self.sample(
-                                                    run_num, num_runs, model_type, model, pos_cond, neg_cond, pos_prompt, neg_prompt, latent_batch, vae,
+                                                batch_img, batch_latent, batch_params, fvd_params = self.sample(
+                                                    run_num, num_runs, selected_model, model, pos_cond, neg_cond, pos_prompt, neg_prompt, latent_batch, vae,
                                                     seed_to_use, guidance_to_use, run_sampler, run_scheduler, step_to_use, denoise_to_use, max_shift_to_use,
                                                     base_shift_to_use, multiplier_to_use, add_params, add_prompt, font_size, fs_llm_params, show_params_in_terminal,
                                                     show_prompt_in_terminal, added_lines
@@ -592,6 +607,7 @@ class FlowStateUnifiedSampler:
                                                 img_out.append(batch_img)
                                                 latent_out.append(batch_latent)
                                                 params_out.append(batch_params)
+                                                fvd_params_out.append(fvd_params)
 
                                                 # Run number adjust
                                                 run_num += 1
@@ -600,5 +616,6 @@ class FlowStateUnifiedSampler:
         self.last_img_batch = torch.cat(img_out)
         self.prev_params += params_out
 
-        return (self.last_img_batch, {'samples': self.last_latent_batch}, )
+        return (self.last_img_batch, {'samples': self.last_latent_batch}, fvd_params_out, )
+
 

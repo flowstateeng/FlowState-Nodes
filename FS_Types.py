@@ -89,6 +89,10 @@ LATENT_IN = ('LATENT', {'tooltip': 'Input latent image for diffusion process.'})
 
 
 # SAMPLING
+FS_MODEL_TYPE_LIST = (['FLUX', 'SD'], )
+FS_MODEL_TYPE_STR = ('STRING', {
+    'default': 'FLUX', 'tooltip': 'Model type passed from Unified Model Loader or other string. If not empty, model_type is used instead of the dropdown model type field.'
+})
 MODEL_IN = ('MODEL', {'tooltip': 'Input Flux or SD model.'})
 POSITIVE_CONDITIONING = ('CONDITIONING', {'tooltip': 'Positive conditioning from clip-encoded text prompt.'})
 NEGATIVE_CONDITIONING = ('CONDITIONING', {'tooltip': 'Negative conditioning from clip-encoded text prompt. For SD models only. Will not be used for Flux.'})
@@ -120,6 +124,9 @@ DENOISE_LIST = ('STRING', {
 LATENT_MULT_LIST = ('STRING', {'default': '1.14', 'tooltip': 'Sets latent multiply factor. Comma-separated list for multiple runs.'})
 
 # FVD
+FLUX_MODEL_IN = ('MODEL', {'tooltip': 'Input Flux model.'})
+FS_PARAMS_IN = ('FS_PARAMS', {'tooltip': 'Flux sampler parameters.'})
+FS_SELECTED_IMG = ('INT', {'default': 1, 'min': 1, 'max': 10, 'tooltip': 'Image that was selected from the Flux batch.'})
 FVD_VID_FRAMES = ('INT', {'default': 24, 'min': 1, 'max': 4096, 'tooltip': 'Defines number of frames in the output video.'})
 FVD_MOTION_BUCKET = ('INT', {'default': 124, 'min': 1, 'max': 1023, 'tooltip': 'Defines a level of motion present in the output video.'})
 FVD_FPS = ('INT', {'default': 12, 'min': 1, 'max': 1024, 'tooltip': 'Defines frames per second in the output video.'})
@@ -151,10 +158,10 @@ METADATA_RAW = ('METADATA_RAW', {'forceInput': True})
 # OUTPUT TYPES
 ##
 MODEL = ('MODEL', )
-MODEL_UNIFIED = ('MODEL', 'CLIP', 'VAE', 'INT', 'STRING' )
+MODEL_UNIFIED = ('MODEL', 'CLIP', 'VAE', 'INT', ['FLUX', 'SD'], )
 CONDITIONING = ('CONDITIONING', )
 
-SAMPLER_UNIFIED = ('IMAGE', 'LATENT', )
+SAMPLER_UNIFIED = ('IMAGE', 'LATENT', 'FS_PARAMS', )
 SAMPLER_FVD = ('LATENT', 'IMAGE', )
 
 STRING_OUT = ('STRING', )

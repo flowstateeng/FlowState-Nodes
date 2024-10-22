@@ -79,6 +79,9 @@ class FlowStatePromptLLM:
             combinations = itertools.combinations(available_models, sc)
             expanded_model_list.extend([', '.join(comb) for comb in combinations])
 
+        clip_preset_vals = ';\n\n'.join([f' - {preset}: {vals}' for preset, vals in CLIP_PRESETS.items()])
+        clip_preset_tooltip = f'CLIP Attention Preset values as follows (q, k, v, out):\n\n{clip_preset_vals}'
+
         return {
             'required': {
                 'clip': CLIP_IN,
@@ -89,6 +92,7 @@ class FlowStatePromptLLM:
                 'llm_model': (expanded_model_list, {'tooltip': 'All combinations of your available models.'}, ),
                 'seed_str_list': SEED_LIST,
                 'max_tokens': MAX_TOKENS_LIST,
+                'clip_preset': (['none', 'default', 'clarity_boost', 'even_flow', 'subtle_focus', 'sharp_detail'], {'tooltip': clip_preset_tooltip}, ),
                 'q': Q_LIST,
                 'k': K_LIST,
                 'v': V_LIST,
@@ -314,7 +318,7 @@ class FlowStatePromptLLM:
 
         return prompts_out_copy
 
-    def generate_prompts(self, clip, positive_text_prompt, negative_text_prompt, prompt_type, seed, llm_model, seed_str_list, max_tokens, q, k, v, out):
+    def generate_prompts(self, clip, positive_text_prompt, negative_text_prompt, prompt_type, seed, llm_model, seed_str_list, max_tokens, clip_preset, q, k, v, out):
         print(f'\n\nFlowState LLM Prompt')
         start_time = time.time()
 
@@ -323,10 +327,18 @@ class FlowStatePromptLLM:
         seed_list = seed_str_list.replace(' ', '').split(',')
         model_list = llm_model.replace(' ', '').split(',')
         token_list = max_tokens.replace(' ', '').split(',')
+
         q_list = q.replace(' ', '').split(',')
         k_list = k.replace(' ', '').split(',')
         v_list = v.replace(' ', '').split(',')
         out_list = out.replace(' ', '').split(',')
+
+        if clip_preset != 'none':
+            print(f' USING PRESET: {clip_preset}')
+            q_list = [CLIP_PRESETS[clip_preset][0]]
+            k_list = [CLIP_PRESETS[clip_preset][1]]
+            v_list = [CLIP_PRESETS[clip_preset][2]]
+            out_list = [CLIP_PRESETS[clip_preset][3]]
 
         prompts_out = [[], [], [], []]
 
@@ -425,5 +437,6 @@ class FlowStatePromptLLMOutput:
             if node:
                 node['widgets_values'] = [str(out_text)]
         return {'ui': {'text': (str(out_text),)}}
+
 
 

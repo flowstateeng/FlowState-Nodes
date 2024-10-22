@@ -61,6 +61,7 @@ class FlowStateLatentChooser:
 
         return {
             'required': {
+                'model_type': FS_MODEL_TYPE_LIST,
                 'width': IMG_WIDTH,
                 'height': IMG_HEIGHT,
                 'latent_type': (['empty_latent', 'input_img', 'imported_img'],),
@@ -73,8 +74,9 @@ class FlowStateLatentChooser:
         }
 
     @classmethod
-    def generate(self, width, height, batch_size=1):
-        latent = torch.zeros([batch_size, 16, height // 8, width // 8], device=self.device)
+    def generate(self, width, height, selected_model, batch_size=1):
+        latent_channels = 16 if selected_model == 'FLUX' else 4
+        latent = torch.zeros([batch_size, latent_channels, height // 8, width // 8], device=self.device)
         return latent
 
     @classmethod
@@ -127,12 +129,14 @@ class FlowStateLatentChooser:
         encoded = vae.encode(output_image[:,:,:,:3])
         return encoded, output_image
 
-    def create_latent(self, latent_type, image, vae, width, height, pixels=None):
-        print(f'\n\n\nFlowState Latent Chooser')
+    def create_latent(self, model_type, latent_type, image, vae, width, height, pixels=None):
+        print(f'\n\n\nFlowState Latent Chooser - {model_type}')
+
+        selected_model = model_type if isinstance(model_type, str) else model_type[0]
 
         if latent_type == 'empty_latent':
             print(f'  - Preparing empty latent.')
-            latent = self.generate(width, height)
+            latent = self.generate(width, height, selected_model)
             return ({'samples':latent}, None, width, height, )
         elif latent_type == 'input_img':
             print(f'  - Preparing latent from input image.')
@@ -146,5 +150,4 @@ class FlowStateLatentChooser:
             img_width = loaded_img.shape[2]
             img_height = loaded_img.shape[1]
             return ({'samples':latent}, loaded_img, img_width, img_height, )
-
 

@@ -1,7 +1,7 @@
 [project]
 name = "flowstate-nodes"
 description = "A collection of custom nodes to consolidate functionality of many other nodes, enable unified workflows, and add custom functionality you won't find with other nodes."
-version = "1.0.0"
+version = "1.0.1"
 license = {file = "LICENSE"}
 dependencies = [
     "transformers>=4.0.0",

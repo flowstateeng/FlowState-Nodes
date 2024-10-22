@@ -22,6 +22,7 @@ Everything is open and free, but if you like my work and wish to see updates and
 - [FlowState Unified Model Loader](https://github.com/flowstateeng/FlowState-Nodes/blob/main/FlowStateUnifiedModelLoader.py)
 - [FlowState LLM Prompt & LLM Output](https://github.com/flowstateeng/FlowState-Nodes/blob/main/FlowStateLLMPrompt.py)
 - [FlowState Latent Chooser](https://github.com/flowstateeng/FlowState-Nodes/blob/main/FlowStateLatentChooser.py)
+- [FlowState FVD Sampler](https://github.com/flowstateeng/FlowState-Nodes/blob/main/FlowStateLatentChooser.py) (alpha)
 
 Video tutorials can be found on YouTube at [FlowState YouTube Channel](https://www.youtube.com/@flowstateeng)
 

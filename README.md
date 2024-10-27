@@ -3,7 +3,7 @@
 </p>
 
 # FlowState Custom Nodes
-The ultimate set of ComfyUI custom nodes to streamline your workflows. Enjoy!
+The ultimate set of ComfyUI custom nodes to streamline your workflows. Happy Halloween! 🎃👻🕸️
 
 Email info@flowstateengineering.com with questions.
 <br/><br/>

@@ -2,9 +2,9 @@ import {app} from "../../scripts/app.js";
 import {createTextWidget} from "./utils.js"
 
 app.registerExtension({
-    name: "FlowStateNodes.FlowStatePromptLLMOutput",
+    name: "FlowStateNodes.FlowStatePromptOutput",
     async beforeRegisterNodeDef(nodeType, nodeData, app) {
-        if (nodeData.name === "FlowStatePromptLLMOutput") {
+        if (nodeData.name === "FlowStatePromptOutput") {
             const onNodeCreated = nodeType.prototype.onNodeCreated;
 
             nodeType.prototype.onNodeCreated = function () {
@@ -25,3 +25,4 @@ app.registerExtension({
         }
     },
 });
+

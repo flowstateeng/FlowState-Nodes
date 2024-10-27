@@ -1,7 +1,6 @@
 transformers>=4.0.0
-torch>=1.7.1
-accelerate
 bitsandbytes>=0.43.0
+accelerate
 
 # llama-cpp-python (CPU only, AVX2)
 https://github.com/oobabooga/llama-cpp-python-cuBLAS-wheels/releases/download/cpu/llama_cpp_python-0.2.89+cpuavx2-cp311-cp311-linux_x86_64.whl; platform_system == "Linux" and platform_machine == "x86_64" and python_version == "3.11"

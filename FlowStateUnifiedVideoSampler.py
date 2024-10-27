@@ -15,9 +15,10 @@ print(f'    - Loaded FVD Sampler node.')
 ##
 # FS IMPORTS
 ##
-from .FS_Types import *
-from .FS_Constants import *
 from .FS_Assets import *
+from .FS_Constants import *
+from .FS_Types import *
+from .FS_Utils import *
 
 
 ##
@@ -57,7 +58,7 @@ warnings.filterwarnings("ignore", category=UserWarning)
 ##
 # NODES
 ##
-class FlowStateFVDSampler:
+class FlowStateUnifiedVideoSampler:
     CATEGORY = 'FlowState/sampler'
     DESCRIPTION = 'Loads & applies FVD model to input image to produce a video.'
     FUNCTION = 'sample'
@@ -261,14 +262,11 @@ class FlowStateFVDSampler:
 
 
 
-# q, k, v, out - clip attn presets
 
-# update node definitions - use anything multi - is_changed - selected_img
 
 # no multiple llm gens for same prompt / different settings (qkv)
 
+
 # x/y output grid
-
-# new stream schedule announcement
-
+# update node definitions - use anything multi - is_changed - selected_img
 

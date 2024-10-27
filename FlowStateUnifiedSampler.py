@@ -14,9 +14,10 @@ print(f'    - Loaded Unified Sampler.')
 ##
 # FS IMPORTS
 ##
-from .FS_Types import *
-from .FS_Constants import *
 from .FS_Assets import *
+from .FS_Constants import *
+from .FS_Types import *
+from .FS_Utils import *
 
 
 ##
@@ -491,7 +492,6 @@ class FlowStateUnifiedSampler:
             latent_out = self.last_latent_batch[run_num].unsqueeze(0)
             img_out = vae.decode(latent_out)
 
-
         adding_params = 'add_params' in actions
         adding_prompt = 'add_prompt' in actions
         removing_params = 'remove_params' in actions
@@ -517,9 +517,10 @@ class FlowStateUnifiedSampler:
 
         return img_out, latent_out, params, fvd_out_params
 
-    def execute(self, model_type, model, positive_conditioning, negative_conditioning, positive_prompt, negative_prompt, latent_batch,
-                vae, seed, added_lines, seed_str_list, sampling_algorithm, scheduling_algorithm, guidance, steps, denoise, max_shift, base_shift,
-                multiplier, add_params, add_prompt, show_params_in_terminal, show_prompt_in_terminal, font_size):
+    def execute(self, model_type, model, positive_conditioning, negative_prompt, latent_batch, vae, seed, added_lines,
+                seed_str_list, sampling_algorithm, scheduling_algorithm, guidance, steps, denoise, max_shift, base_shift,
+                multiplier, add_params, add_prompt, show_params_in_terminal, show_prompt_in_terminal, font_size,
+                negative_conditioning=None, positive_prompt=None):
 
         print(
             f'\n\n\nFlowState Unified Sampler'
@@ -530,6 +531,8 @@ class FlowStateUnifiedSampler:
         latent_out = []
         params_out = []
         fvd_params_out = []
+
+        model_list = model if isinstance(model, list) else [model]
 
         pos_cond_list = positive_conditioning if isinstance(positive_conditioning, list) else [positive_conditioning]
         pos_prompt_list = positive_prompt if isinstance(positive_prompt, list) else [positive_prompt]
@@ -564,13 +567,15 @@ class FlowStateUnifiedSampler:
             if selected_model == 'SD': neg_cond = neg_cond_list[prompt_num]
             if selected_model == 'SD': neg_prompt = neg_prompt_list[prompt_num]
 
+            working_model = model_list[prompt_num] if len(model_list) > 1 else model_list[0]
+
             is_fs_llm_prompt = pos_prompt.startswith(f'{FS_LLM_PROMPT_TAG}-')
             fs_llm_params = None
             if is_fs_llm_prompt:
                 pos_prompt = pos_prompt.replace(f'{FS_LLM_PROMPT_TAG}-', '')
                 prompt_parts = pos_prompt.split('-----')
                 fs_llm_params = prompt_parts[0]
-                pos_prompt = prompt_parts[1]
+                pos_prompt = prompt_parts[1].replace('- ', '')
 
             for seed_num, run_seed in enumerate(seed_list):
                 seed_to_use = self.format_num(run_seed, int, seed)
@@ -598,7 +603,7 @@ class FlowStateUnifiedSampler:
                                                 multiplier_to_use = self.format_num(run_multiplier, float, 1.0)
 
                                                 batch_img, batch_latent, batch_params, fvd_params = self.sample(
-                                                    run_num, num_runs, selected_model, model, pos_cond, neg_cond, pos_prompt, neg_prompt, latent_batch, vae,
+                                                    run_num, num_runs, selected_model, working_model, pos_cond, neg_cond, pos_prompt, neg_prompt, latent_batch, vae,
                                                     seed_to_use, guidance_to_use, run_sampler, run_scheduler, step_to_use, denoise_to_use, max_shift_to_use,
                                                     base_shift_to_use, multiplier_to_use, add_params, add_prompt, font_size, fs_llm_params, show_params_in_terminal,
                                                     show_prompt_in_terminal, added_lines

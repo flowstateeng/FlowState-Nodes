@@ -1,3 +1,12 @@
+# Project: FlowState Constants
+# Description: Global constants for all nodes.
+# Author: Johnathan Chivington
+# Contact: johnathan@flowstateengineering.com | youtube.com/@flowstateeng
+
+
+##
+# OUTSIDE IMPORTS
+##
 import os, folder_paths
 
 ##

@@ -1,3 +1,12 @@
+# Project: FlowState Node Mappings
+# Description: Node mappings for ComfyUI registry.
+# Author: Johnathan Chivington
+# Contact: johnathan@flowstateengineering.com | youtube.com/@flowstateeng
+
+
+##
+# FS IMPORTS
+##
 from .FS_Nodes import *
 
 
@@ -11,21 +20,23 @@ print(f'  - Loading node name mappings...')
 # MAPPINGS
 ##
 NODE_CLASS_MAPPINGS = {
-    'FlowStateFVDSampler': FlowStateFVDSampler,
+    'FlowStateUnifiedVideoSampler': FlowStateUnifiedVideoSampler,
     'FlowStateUnifiedSampler': FlowStateUnifiedSampler,
     'FlowStateUnifiedModelLoader': FlowStateUnifiedModelLoader,
-    'FlowStatePromptLLM': FlowStatePromptLLM,
-    'FlowStatePromptLLMOutput': FlowStatePromptLLMOutput,
-    'FlowStateLatentChooser': FlowStateLatentChooser
+    'FlowStateUnifiedPrompt': FlowStateUnifiedPrompt,
+    'FlowStatePromptOutput': FlowStatePromptOutput,
+    'FlowStateLatentChooser': FlowStateLatentChooser,
+    'FlowStateUnifiedStyler': FlowStateUnifiedStyler
 }
 
 NODE_DISPLAY_NAME_MAPPINGS = {
-    'FlowStateFVDSampler': 'FlowState FVD Sampler',
+    'FlowStateUnifiedVideoSampler': 'FlowState Unified Video Sampler',
     'FlowStateUnifiedSampler': 'FlowState Unified Sampler',
     'FlowStateUnifiedModelLoader': 'FlowState Unified Model Loader',
-    'FlowStatePromptLLM': 'FlowState LLM Prompt',
-    'FlowStatePromptLLMOutput': 'FlowState LLM Prompt Output',
-    'FlowStateLatentChooser': 'FlowState Latent Chooser'
+    'FlowStateUnifiedPrompt': 'FlowState Unified Prompt',
+    'FlowStatePromptOutput': 'FlowState Prompt Output',
+    'FlowStateLatentChooser': 'FlowState Latent Chooser',
+    'FlowStateUnifiedStyler': 'FlowState Unified Styler'
 }
 
 

@@ -91,7 +91,7 @@ The FlowState Unified Styler brings together the powerful capabilities of LoRAs 
 Use this powerful sampler with your Flux AND Stable Diffusion models. Includes support for testing a variety of parameters in your batches. Add parameters and/or prompts to your output images for easy identification. Adjust font size and number of lines to include exactly the text you want. Control your terminal/CMD prompt output. Includes Latent Multiply and VAE Decode functionality, so no need for extra nodes in your workflow.
 <p align="center">
   <img width='850' src='https://github.com/flowstateeng/FlowState-Nodes/blob/main/imgs/FS-Unified-Sampler.png' alt='FS Unified Sampler Image'/>
-</p><br/>
+</p>
 
 ### Sampler Example Output
 <p align="center">

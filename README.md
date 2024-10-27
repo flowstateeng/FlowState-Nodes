@@ -91,10 +91,15 @@ The FlowState Unified Styler brings together the powerful capabilities of LoRAs 
 Use this powerful sampler with your Flux AND Stable Diffusion models. Includes support for testing a variety of parameters in your batches. Add parameters and/or prompts to your output images for easy identification. Adjust font size and number of lines to include exactly the text you want. Control your terminal/CMD prompt output. Includes Latent Multiply and VAE Decode functionality, so no need for extra nodes in your workflow.
 <p align="center">
   <img width='850' src='https://github.com/flowstateeng/FlowState-Nodes/blob/main/imgs/FS-Unified-Sampler.png' alt='FS Unified Sampler Image'/>
+</p><br/>
+
+### Sampler Example Output
+<p align="center">
   <img width='850' src='https://github.com/flowstateeng/FlowState-Nodes/blob/main/imgs/FS-Unified-Sampler-Output.png' alt='FS Unified Sampler Image 2'/>
 </p><br/><br/>
 
-## FlowState LLM Prompt & LLM Prompt Output
+
+## FlowState Unified Prompt & Prompt Output
 Tighten up your workflow with the FlowState LLM Prompt. Load a .gguf model to generate sophisticated image prompts, or simply flip a switch to use your own. Handles the text encoding for you internally, so you don't need another Text Encode node off to the side. Outputs the original and generated text and conditioning, in case you want to pass it to another node. Also includes the Clip Attention Multiply functionality, thus eliminating another node from your workflow.
 <p align="center">
   <img width='850' src='https://github.com/flowstateeng/FlowState-Nodes/blob/main/imgs/FS-Unified-Prompt.png' alt='FS Unified-Prompt Image'/>

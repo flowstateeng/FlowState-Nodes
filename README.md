@@ -100,7 +100,7 @@ Use this powerful sampler with your Flux AND Stable Diffusion models. Includes s
 
 
 ## FlowState Unified Prompt & Prompt Output
-Tighten up your workflow with the FlowState LLM Prompt. Load a .gguf model to generate sophisticated image prompts, or simply flip a switch to use your own. Handles the text encoding for you internally, so you don't need another Text Encode node off to the side. Outputs the original and generated text and conditioning, in case you want to pass it to another node. Also includes the Clip Attention Multiply functionality, thus eliminating another node from your workflow.
+Tighten up your workflow with the FlowState Unified Prompt & Prompt Output nodes. Load a .gguf model to generate sophisticated image prompts, or simply flip a switch to use your own. Handles the text encoding for you internally, so you don't need another Text Encode node off to the side. Outputs the original and generated text and conditioning, in case you want to pass it to another node. Also includes the Clip Attention Multiply functionality, thus eliminating another node from your workflow.
 <p align="center">
   <img width='850' src='https://github.com/flowstateeng/FlowState-Nodes/blob/main/imgs/FS-Unified-Prompt.png' alt='FS Unified-Prompt Image'/>
 </p><br/><br/>

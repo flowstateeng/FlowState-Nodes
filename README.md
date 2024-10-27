@@ -121,7 +121,6 @@ Expand your latent options and clean up your workflow with FlowState Latent Choo
 ## Authors
 **Johnathan Chivington:**
 * [YouTube](https://youtube.com/@flowstateeng), [Patreon](https://youtube.com/@flowstateeng), [Discord](https://discord.gg/KgxgXBjMX6), [X](https://x.com/FlowStateEng), [GitHub](https://github.com/flowstateeng)
-<br/>
 
 ## Issues
 * PLEASE MESSAGE YOUR BUG REPORTS ON DISCORD, PATREON, OR SUBMIT AN ISSUE ON GITHUB. MERGE/PULL REQUESTS WILL BE DELETED.

@@ -469,7 +469,6 @@ class FlowStatePromptOutput:
             if node:
                 node['widgets_values'] = [str(out_text)]
 
-        print(f'\n\n out_text FINAL: \n{out_text} \n\n')
         return {'ui': {'text': (str(out_text),)}}
 
 

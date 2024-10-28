@@ -24,8 +24,8 @@ from .FS_Utils import *
 ##
 # OUTSIDE IMPORTS
 ##
-import time, copy
-import warnings
+import time, copy, gc, warnings
+import torch
 
 from nodes import ControlNetLoader
 from nodes import ControlNetApplyAdvanced
@@ -79,6 +79,9 @@ class FlowStateUnifiedStyler:
         'Pass through negative prompt.',
     )
 
+    def __init__(self):
+        self.loaded_models = []
+
     @classmethod
     def INPUT_TYPES(s):
         return {
@@ -104,7 +107,8 @@ class FlowStateUnifiedStyler:
                 'lora_2': LORA_LIST,
                 'lora_3': LORA_LIST,
                 'lora_strength': LORA_STRENGTH,
-                'clip_strength': LORA_CLIP_STRENGTH
+                'clip_strength': LORA_CLIP_STRENGTH,
+                # 'unload_loras': (['none'], )
             }
         }
 
@@ -125,12 +129,16 @@ class FlowStateUnifiedStyler:
                 values[v] = float(val)
 
             if val_type == 'int' and is_int:
-                values[v] = int(val)
+                values[v] = float(val)
 
             if not is_float and not is_int:
                 values[v] = 1.0
 
         return values, params_str
+
+    def unload_loras(self):
+        gc.collect()
+        torch.cuda.empty_cache()
 
     def apply_controlnet(self, controlnet_name, positive_conditioning, negative_conditioning, image,
         controlnet_strength, controlnet_start, controlnet_end, vae, canny_low_threshold, canny_high_threshold):
@@ -146,12 +154,12 @@ class FlowStateUnifiedStyler:
     # def apply_style(self,
     #         style_type, model, vae, image, positive_conditioning, negative_conditioning, positive_prompt, negative_prompt,
     #         controlnet_1, controlnet_2, controlnet_3, controlnet_strength, controlnet_start, controlnet_end,
-    #         canny_low_threshold, canny_high_threshold, lora_1, lora_2, lora_3, lora_strength, clip, clip_strength
+    #         canny_low_threshold, canny_high_threshold, lora_1, lora_2, lora_3, lora_strength, clip, clip_strength, unload_loras
     #     ):
 
     def apply_style(self,
             style_type, model, vae, image, positive_conditioning, negative_conditioning, positive_prompt, negative_prompt,
-            lora_1, lora_2, lora_3, lora_strength, clip, clip_strength
+            lora_1, lora_2, lora_3, lora_strength, clip, clip_strength, unload_loras
         ):
 
         print(f'\n\nFlowState Unified Styler - adding selected styles.')

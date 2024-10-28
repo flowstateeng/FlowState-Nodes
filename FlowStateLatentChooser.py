@@ -138,7 +138,7 @@ class FlowStateLatentChooser:
         selected_model = model_type if isinstance(model_type, str) else model_type[0]
 
         if latent_type == 'empty_latent':
-            print(f'  - Preparing empty latent.')
+            print(f'  - Preparing empty latent.\n')
             using_custom = aspect_ratio == 'custom'
             aspect_split = aspect_ratio.split(' - ')[0].split('x')
             width_to_use = width if using_custom else int(aspect_split[0])

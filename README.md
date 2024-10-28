@@ -68,7 +68,8 @@ COMING SOON: Install through the ComfyUI Custom Node Manager!
 * CLIP Attention fields on Prompt node condensed to single preset drop down
 * Minor bug fixes for wider compatibility
 
-## Coming Soon
+## Coming Soon (estimates given from time of latest push)
+* Model Persistence (~1.5 days)
 * Control Net support! (~1-3 days)
 * Video Sampler Tuning & Presets (~2-5 days)
 * Custom message instructions and presets for LLM prompt models, including for negative prompts (~3-7 days)

@@ -1,5 +1,5 @@
 import { app } from '../../scripts/app.js'
-import { createTextWidget, createListWidget } from './utils.js'
+import { createTextWidget } from './utils.js'
 
 app.registerExtension({
     name: 'FlowStateNodes.FlowStatePromptOutput',

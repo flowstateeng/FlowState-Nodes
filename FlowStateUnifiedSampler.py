@@ -534,6 +534,8 @@ class FlowStateUnifiedSampler:
 
         model_list = model if isinstance(model, list) else [model]
 
+        latent_list = latent_batch if isinstance(latent_batch, list) else [latent_batch]
+
         pos_cond_list = positive_conditioning if isinstance(positive_conditioning, list) else [positive_conditioning]
         pos_prompt_list = positive_prompt if isinstance(positive_prompt, list) else [positive_prompt]
 
@@ -568,6 +570,7 @@ class FlowStateUnifiedSampler:
             if selected_model == 'SD': neg_prompt = neg_prompt_list[prompt_num]
 
             working_model = model_list[prompt_num] if len(model_list) > 1 else model_list[0]
+            working_latent = latent_list[prompt_num] if len(latent_list) > 1 else latent_list[0]
 
             is_fs_llm_prompt = pos_prompt.startswith(f'{FS_LLM_PROMPT_TAG}-')
             fs_llm_params = None
@@ -603,10 +606,11 @@ class FlowStateUnifiedSampler:
                                                 multiplier_to_use = self.format_num(run_multiplier, float, 1.0)
 
                                                 batch_img, batch_latent, batch_params, fvd_params = self.sample(
-                                                    run_num, num_runs, selected_model, working_model, pos_cond, neg_cond, pos_prompt, neg_prompt, latent_batch, vae,
-                                                    seed_to_use, guidance_to_use, run_sampler, run_scheduler, step_to_use, denoise_to_use, max_shift_to_use,
-                                                    base_shift_to_use, multiplier_to_use, add_params, add_prompt, font_size, fs_llm_params, show_params_in_terminal,
-                                                    show_prompt_in_terminal, added_lines
+                                                    run_num, num_runs, selected_model, working_model, pos_cond, neg_cond,
+                                                    pos_prompt, neg_prompt, working_latent, vae, seed_to_use, guidance_to_use,
+                                                    run_sampler, run_scheduler, step_to_use, denoise_to_use, max_shift_to_use,
+                                                    base_shift_to_use, multiplier_to_use, add_params, add_prompt, font_size,
+                                                    fs_llm_params, show_params_in_terminal, show_prompt_in_terminal, added_lines
                                                 )
 
                                                 img_out.append(batch_img)

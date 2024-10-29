@@ -64,9 +64,10 @@ class FlowStateLatentChooser:
         return {
             'required': {
                 'model_type': FS_MODEL_TYPE_LIST,
-                'width': IMG_WIDTH,
-                'height': IMG_HEIGHT,
-                'aspect_ratio': LATENT_CHOOSER_RESOLUTION,
+                'custom_width': IMG_WIDTH,
+                'custom_height': IMG_HEIGHT,
+                'resolution': LATENT_CHOOSER_RESOLUTION,
+                'orientation': LATENT_CHOOSER_ORIENTATION,
                 'latent_type': (['empty_latent', 'input_img', 'imported_img'],),
                 'image': (sorted(files), {'image_upload': True}),
                 'vae': VAE_IN
@@ -132,19 +133,22 @@ class FlowStateLatentChooser:
         encoded = vae.encode(output_image[:,:,:,:3])
         return encoded, output_image
 
-    def create_latent(self, model_type, aspect_ratio, latent_type, image, vae, width, height, pixels=None):
+    def create_latent(self, model_type, resolution, orientation, latent_type, image, vae, custom_width, custom_height, pixels=None):
         print(f'\n\n\nFlowState Latent Chooser - {model_type}')
 
         selected_model = model_type if isinstance(model_type, str) else model_type[0]
 
         if latent_type == 'empty_latent':
             print(f'  - Preparing empty latent.\n')
-            using_custom = aspect_ratio == 'custom'
-            aspect_split = aspect_ratio.split(' - ')[0].split('x')
-            width_to_use = width if using_custom else int(aspect_split[0])
-            height_to_use = height if using_custom else int(aspect_split[1])
+            using_custom = resolution == 'custom'
+            horizontal_img = orientation == 'horizontal'
+            aspect_split = resolution.split(' - ')[0].split('x')
+            aspect_w = int(aspect_split[0])
+            aspect_h = int(aspect_split[1])
+            width_to_use = custom_width if using_custom else (aspect_w if horizontal_img else aspect_h)
+            height_to_use = custom_height if using_custom else (aspect_h if horizontal_img else aspect_w)
             latent = self.generate(width_to_use, height_to_use, selected_model)
-            return ({'samples':latent}, vae, None, width_to_use, height_to_use, )
+            return ({'samples':latent}, vae, image, width_to_use, height_to_use, )
         elif latent_type == 'input_img':
             print(f'  - Preparing latent from input image.')
             latent = vae.encode(pixels[:,:,:,:3])

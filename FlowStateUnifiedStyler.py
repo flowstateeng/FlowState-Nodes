@@ -9,7 +9,7 @@
 ##
 # SYSTEM STATUS
 ##
-print(f'    - Loaded FVD Sampler node.')
+print(f'    - Loaded Unified Styler node.')
 
 
 ##
@@ -60,6 +60,7 @@ class FlowStateUnifiedStyler:
     RETURN_TYPES = STYLER_UNIFIED
     RETURN_NAMES = (
         'model',
+        'latent_batch',
         'vae',
         'positive_conditioning',
         'negative_conditioning',
@@ -70,13 +71,14 @@ class FlowStateUnifiedStyler:
     )
     OUTPUT_TOOLTIPS = (
         'The model, with LoRA optionally applied.',
+        'Either the latent passed through from the Latent Chooser or the Control Net processed latent.',
         'The VAE to pass to the sampler.',
         'The positive conditioning, with control net optionally applied.',
         'The negative conditioning, with control net optionally applied.',
-        'Input image.',
-        'Input image with Canny Preprocessor applied.',
         'Pass through positive prompt.',
         'Pass through negative prompt.',
+        'Input image.',
+        'Input image with Canny Preprocessor applied.',
     )
 
     def __init__(self):
@@ -88,24 +90,25 @@ class FlowStateUnifiedStyler:
             'required': {
                 'style_type': STYLE_TYPE,
                 'model': MODEL_IN,
+                'latent_batch': LATENT_IN,
                 'vae': VAE_IN,
-                'clip': CLIP_IN,
                 'image': IMAGE,
+                'clip': CLIP_IN,
                 'positive_conditioning': POSITIVE_CONDITIONING,
                 'negative_conditioning': NEGATIVE_CONDITIONING,
                 'positive_prompt': STRING_PROMPT_POSITIVE,
                 'negative_prompt': STRING_PROMPT_NEGATIVE,
-                # 'controlnet_1': CONTROL_NET_LIST,
-                # 'controlnet_2': CONTROL_NET_LIST,
-                # 'controlnet_3': CONTROL_NET_LIST,
+                # 'controlnet_1': CONTROL_NET_LIST(),
+                # 'controlnet_2': CONTROL_NET_LIST(),
+                # 'controlnet_3': CONTROL_NET_LIST(),
                 # 'controlnet_strength': CONTROL_NET_STRNGTH,
                 # 'controlnet_start': CONTROL_NET_START,
                 # 'controlnet_end': CONTROL_NET_END,
                 # 'canny_low_threshold': CANNY_THRESHOLD_LOW,
                 # 'canny_high_threshold': CANNY_THRESHOLD_HIGH,
-                'lora_1': LORA_LIST,
-                'lora_2': LORA_LIST,
-                'lora_3': LORA_LIST,
+                'lora_1': LORA_LIST(),
+                'lora_2': LORA_LIST(),
+                'lora_3': LORA_LIST(),
                 'lora_strength': LORA_STRENGTH,
                 'clip_strength': LORA_CLIP_STRENGTH,
                 # 'unload_loras': (['none'], )
@@ -117,7 +120,7 @@ class FlowStateUnifiedStyler:
             for p, param in enumerate(row):
                 lists[p] += [param]
 
-    def process_params(self, input_str, val_type):
+    def process_params(self, input_str):
         values = input_str.replace(' ', '').split(',')
         params_str = ';'.join(values)
 
@@ -125,14 +128,7 @@ class FlowStateUnifiedStyler:
             is_float = '.' in val
             is_int = val.isdigit()
 
-            if val_type == 'float' and is_float:
-                values[v] = float(val)
-
-            if val_type == 'int' and is_int:
-                values[v] = float(val)
-
-            if not is_float and not is_int:
-                values[v] = 1.0
+            values[v] = float(val) if is_float or is_int else 1.0
 
         return values, params_str
 
@@ -152,14 +148,15 @@ class FlowStateUnifiedStyler:
         return pos_cond, neg_cond, canny_img
 
     # def apply_style(self,
-    #         style_type, model, vae, image, positive_conditioning, negative_conditioning, positive_prompt, negative_prompt,
-    #         controlnet_1, controlnet_2, controlnet_3, controlnet_strength, controlnet_start, controlnet_end,
-    #         canny_low_threshold, canny_high_threshold, lora_1, lora_2, lora_3, lora_strength, clip, clip_strength, unload_loras
+    #         style_type, model, latent_batch, vae, image, positive_conditioning, negative_conditioning,
+    #         positive_prompt, negative_prompt, controlnet_1, controlnet_2, controlnet_3, controlnet_strength,
+    #         controlnet_start, controlnet_end, canny_low_threshold, canny_high_threshold, lora_1, lora_2, lora_3,
+    #         lora_strength, clip, clip_strength, unload_loras
     #     ):
 
     def apply_style(self,
-            style_type, model, vae, image, positive_conditioning, negative_conditioning, positive_prompt, negative_prompt,
-            lora_1, lora_2, lora_3, lora_strength, clip, clip_strength, unload_loras
+            style_type, model, latent_batch, vae, image, positive_conditioning, negative_conditioning, positive_prompt, negative_prompt,
+            lora_1, lora_2, lora_3, lora_strength, clip, clip_strength
         ):
 
         print(f'\n\nFlowState Unified Styler - adding selected styles.')
@@ -168,8 +165,8 @@ class FlowStateUnifiedStyler:
 
         lora_input_list = [lora_1, lora_2, lora_3]
         lora_list = [lora_name for lora_name in lora_input_list if lora_name != 'none']
-        lora_strength_list, lora_strength_str = self.process_params(lora_strength, 'float')
-        clip_strength_list, clip_strength_str = self.process_params(clip_strength, 'float')
+        lora_strength_list, lora_strength_str = self.process_params(lora_strength)
+        clip_strength_list, clip_strength_str = self.process_params(clip_strength)
 
         lora_params_str = ','.join([f'{l}:' + '; '.join(p) for l,p in [ ('lora_list', lora_list) ]]) + ','
         lora_params_str += f'lora_strengths:{lora_strength_str},clip_strengths:{clip_strength_str}'
@@ -180,11 +177,11 @@ class FlowStateUnifiedStyler:
         # cn_input_list = [controlnet_1, controlnet_2, controlnet_3]
         # cn_list = [controlnet_name for controlnet_name in cn_input_list if controlnet_name != 'none']
 
-        # cn_strength_list, cn_strength_str = self.process_params(controlnet_strength, 'float')
-        # cn_start_list, cn_start_str = self.process_params(controlnet_start, 'float')
-        # cn_end_list, cn_end_str = self.process_params(controlnet_end, 'float')
-        # canny_low_list, canny_low_str = self.process_params(canny_low_threshold, 'float')
-        # canny_high_list, canny_high_str = self.process_params(canny_high_threshold, 'float')
+        # cn_strength_list, cn_strength_str = self.process_params(controlnet_strength)
+        # cn_start_list, cn_start_str = self.process_params(controlnet_start)
+        # cn_end_list, cn_end_str = self.process_params(controlnet_end)
+        # canny_low_list, canny_low_str = self.process_params(canny_low_threshold)
+        # canny_high_list, canny_high_str = self.process_params(canny_high_threshold)
 
         # cn_params_str = ','.join([f'{l}:' + '; '.join(p) for l,p in [ ('cn_list', cn_list) ]]) + ','
         # cn_params_str += (
@@ -226,15 +223,15 @@ class FlowStateUnifiedStyler:
                 # if style == 'control_net':
                 #     print(f' - Applying Control Net to this conditioning')
                 #     cn_pos_prompt = base_pos_prompt.replace(f'-----', f',{cn_params_str}-----')
-                #     cn_out = [pos_cond, neg_cond, image]
+                #     cn_out = [pos_cond, neg_cond, None]
                 #     for cn_num, controlnet in enumerate(cn_list):
                 #         print(f'  - Applying Control {cn_num + 1}: {controlnet}')
                 #         first_cn = cn_num == 0
-                #         strength = cn_strength_list[cn_num] if cn_strength_list_matches else cn_strength_list[0]
-                #         start = cn_start_list[cn_num] if cn_start_list_matches else cn_start_list[0]
-                #         end = cn_end_list[cn_num] if cn_end_list_matches else cn_end_list[0]
-                #         low = canny_low_list[cn_num] if canny_low_list_matches else canny_low_list[0]
-                #         high = canny_high_list[cn_num] if canny_high_list_matches else canny_high_list[0]
+                #         strength = cn_strength_list[cn_num] if cn_strength_list_matches else cn_strength_list[-1]
+                #         start = cn_start_list[cn_num] if cn_start_list_matches else cn_start_list[-1]
+                #         end = cn_end_list[cn_num] if cn_end_list_matches else cn_end_list[-1]
+                #         low = canny_low_list[cn_num] if canny_low_list_matches else canny_low_list[-1]
+                #         high = canny_high_list[cn_num] if canny_high_list_matches else canny_high_list[-1]
 
                 #         cn_pos, cn_neg, cn_canny_img = self.apply_controlnet(
                 #             controlnet, cn_out[0], cn_out[1], image, strength, start, end, vae, low, high
@@ -270,11 +267,28 @@ class FlowStateUnifiedStyler:
 
         styler_duration, styler_mins, styler_secs = get_mins_and_secs(start_time)
 
+        # model_mem_sizes = [ m.size for m in styler_out[0] ]
+        # kb = [ round(mem / 1024, 2) for mem in model_mem_sizes ]
+        # mb = [ round(mem / 1024, 2) for mem in kb ]
+        # gb = [ round(mem / 1024, 2) for mem in mb ]
+
         print(
             f'\n\n\nFlowState Unified Styler - Styling generation complete.'
             f'\n  - Styling Time: {styler_mins}m {styler_secs}s'
+            # f'\n  - Model Sizes (bytes): {model_mem_sizes}'
+            # f'\n  - Model Sizes (kb): {kb}'
+            # f'\n  - Model Sizes (mb): {mb}'
+            # f'\n  - Model Sizes (gb): {gb}'
         )
 
-        # default_canny = styler_out[3] if len(styler_out[3]) > 0 else image
-        return (styler_out[0], vae, styler_out[1], styler_out[2], styler_out[4], neg_cond_list, image, image, )
+        out_latent = styler_out[3] if len(styler_out[3]) > 0 else latent_batch
+
+        if out_latent != latent_batch:
+            for i, img in enumerate(out_latent):
+                latent_img = vae.encode(img)[0]
+                out_latent[i] = latent_img
+
+        out_canny = torch.cat(styler_out[3]) if len(styler_out[3]) > 0 else image
+
+        return (styler_out[0], out_latent, vae, styler_out[1], styler_out[2], styler_out[4], neg_cond_list, image, out_canny, )
 

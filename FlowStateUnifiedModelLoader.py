@@ -64,13 +64,13 @@ class FlowStateUnifiedModelLoader:
     def INPUT_TYPES(s):
         return {
             'required': {
-                'model_file': ALL_MODEL_LISTS,
+                'model_file': ALL_MODEL_LISTS(),
                 'weight_dtype': (['default', 'fp8_e4m3fn', 'fp8_e4m3fn_fast', 'fp8_e5m2'], ),
                 'model_type': (['NF4', 'UNET', 'SD'],),
-                'clip_1': CLIP_LIST,
-                'clip_2': CLIP_LIST,
+                'clip_1': CLIP_LIST(),
+                'clip_2': CLIP_LIST(),
                 'clip_type': (['default', 'sdxl', 'sd3', 'flux'], ),
-                'vae_name': VAE_LIST,
+                'vae_name': VAE_LIST(),
                 'seed': SEED,
             }
         }

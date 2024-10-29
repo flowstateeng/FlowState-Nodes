@@ -135,27 +135,19 @@ LATENT_CHOOSER_RESOLUTION = ([
     '2048x2048 - 1:1',
     '1024x1024 - 1:1',
     '720x720 - 1:1',
-    '512x512 - 1:1',
-    # VERTICAL
-    '1080x1920 - 9:16',
-    '720x1280 - 9:16',
-    '768x1280 - 3:5',
-    '960x1280 - 3:4',
-    '768x1024 - 3:4',
-    '512x2048 - 1:4',
-    '896x1152 - 7:9',
-    '2048x4096 - 1:2',
-    '1024x2048 - 1:2',
-    '670x1564 - 9:21',
-    '948x2212 - 9:21',
+    '512x512 - 1:1'
     ], {
     'tooltip': (
-        f'LLM Prompt Type\n\n'
-        f' - custom = Specify the exact resolution you want.\n\n'
-        f' - preset resolution = Will use this resolution instead of the input resolution.\n\n'
+        f'Resolution Selector\n\n'
+        f' - Select custom to use the entered width & height, or select a resolution.\n\n'
     )
 })
-
+LATENT_CHOOSER_ORIENTATION = (['horizontal', 'vertical'], {
+    'tooltip': (
+        f'Orientation Selector\n\n'
+        f' - Resolutions given in horizontal orientation. Selects vertical to swap.\n\n'
+    )
+})
 
 # SAMPLING
 FS_MODEL_TYPE_LIST = (['FLUX', 'SD'], )
@@ -223,14 +215,14 @@ CLIP_IN = ('CLIP', {'tooltip': 'The CLIP model used for encoding the text.'})
 VAE_IN = ('VAE', {'tooltip': 'The VAE model used for encoding and decoding images.'})
 CONTROL_NET_IN = ('CONTROL_NET', {'tooltip': 'The Control Net model used to patch your image model.'})
 
-UNET_LIST = (UNET_LIST_PATH, {'tooltip': 'UNET model list.'})
-NF4_LIST = (NF4_LIST_PATH, {'tooltip': 'Checkpoint model list.'})
-CKPT_LIST = (CKPT_LIST_PATH, {'tooltip': 'Checkpoint model list.'})
-CLIP_LIST = (CLIP_LIST_PATH, {'tooltip': 'CLIP model list.'})
-VAE_LIST = (VAE_LIST_PATH, {'tooltip': 'VAE model list.'})
-CONTROL_NET_LIST = (['none'] + CONTROL_NET_LIST_PATH, {'tooltip': 'Control Net model list.'})
-LORA_LIST = (['none'] + LORA_LIST_PATH, {'tooltip': 'LoRA model list.'})
-ALL_MODEL_LISTS = (ALL_MODEL_LIST_PATHS, {'tooltip': 'All models list.'})
+UNET_LIST = lambda: (UNET_LIST_PATH(), {'tooltip': 'UNET model list.'})
+NF4_LIST = lambda: (NF4_LIST_PATH(), {'tooltip': 'Checkpoint model list.'})
+CKPT_LIST = lambda: (CKPT_LIST_PATH(), {'tooltip': 'Checkpoint model list.'})
+CLIP_LIST = lambda: (CLIP_LIST_PATH(), {'tooltip': 'CLIP model list.'})
+VAE_LIST = lambda: (VAE_LIST_PATH(), {'tooltip': 'VAE model list.'})
+CONTROL_NET_LIST = lambda: (['none'] + CONTROL_NET_LIST_PATH(), {'tooltip': 'Control Net model list.'})
+LORA_LIST = lambda: (['none'] + LORA_LIST_PATH(), {'tooltip': 'LoRA model list.'})
+ALL_MODEL_LISTS = lambda: (ALL_MODEL_LIST_PATHS(), {'tooltip': 'All models list.'})
 
 
 # STYLE MODELS
@@ -357,5 +349,5 @@ LATENT = ('LATENT', )
 LATENT_CHOOSER = ('LATENT', 'VAE', 'IMAGE', 'INT', 'INT', )
 IMAGE = ('IMAGE', )
 
-STYLER_UNIFIED = ('MODEL', 'VAE', 'CONDITIONING', 'CONDITIONING', 'STRING', 'STRING', 'IMAGE', 'IMAGE', )
+STYLER_UNIFIED = ('MODEL', 'LATENT', 'VAE', 'CONDITIONING', 'CONDITIONING', 'STRING', 'STRING', 'IMAGE', 'IMAGE', )
 

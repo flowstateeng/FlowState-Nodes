@@ -9,7 +9,7 @@
 ##
 # SYSTEM STATUS
 ##
-print(f'    - Loaded FVD Sampler node.')
+print(f'    - Loaded Unified Video Sampler node.')
 
 
 ##

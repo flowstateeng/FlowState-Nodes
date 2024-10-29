@@ -267,15 +267,15 @@ class FlowStateUnifiedStyler:
 
         styler_duration, styler_mins, styler_secs = get_mins_and_secs(start_time)
 
-        # model_mem_sizes = [ m.size for m in styler_out[0] ]
-        # kb = [ round(mem / 1024, 2) for mem in model_mem_sizes ]
-        # mb = [ round(mem / 1024, 2) for mem in kb ]
-        # gb = [ round(mem / 1024, 2) for mem in mb ]
+        model_mem_sizes = [ m.size for m in styler_out[0] ]
+        kb = [ round(mem / 1024, 2) for mem in model_mem_sizes ]
+        mb = [ round(mem / 1024, 2) for mem in kb ]
+        gb = [ round(mem / 1024, 2) for mem in mb ]
 
         print(
             f'\n\n\nFlowState Unified Styler - Styling generation complete.'
             f'\n  - Styling Time: {styler_mins}m {styler_secs}s'
-            # f'\n  - Model Sizes (bytes): {model_mem_sizes}'
+            # f'\n  - Model Sizes (bytes): {image}'
             # f'\n  - Model Sizes (kb): {kb}'
             # f'\n  - Model Sizes (mb): {mb}'
             # f'\n  - Model Sizes (gb): {gb}'

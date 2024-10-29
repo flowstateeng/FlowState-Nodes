@@ -57,15 +57,16 @@ COMING SOON: Install through the ComfyUI Custom Node Manager!
 <br/><br/>
 
 
-# LATEST PUSH 10/29/24 - 11:15 am (GMT-5) #
+# 1.1.2 RELEASE (LATEST) 10/29/24 - 1:30 pm (GMT-5) #
 
 ## Updates
 * Introduction of orientation selector
 * Fixed "unload_loras" bug
 * Converted static model directories to dynamic, so no restart required when downloading new models or changing filenames
+* Fixed issue with custom resolution inputs
 
 
-# PUSH 10/27/24 - 3:00 pm (GMT-5) #
+# 1.1.0 RELEASE 10/27/24 - 3:00 pm (GMT-5) #
 
 ## Updates
 * Video Sampler node is available but still experimental
